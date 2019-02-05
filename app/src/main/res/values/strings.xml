@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">SplitBill</string>
+    //fb used
+    <string name="facebook_app_id">291524491512980</string>
+    <string name="fb_login_protocol_scheme">fb291524491512980</string>
+
+    //shared preference
+    <string name="preference_file_key">com.example.mehmood.SplitBill.preference_file_key</string>
+    <string name="email">userEmail</string>
+    <string name="Name">userName</string>
+    <string name="id">userId</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>
