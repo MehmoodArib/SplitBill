@@ -85,12 +85,17 @@ public class LogInFragment extends Fragment {
                 GraphRequest graphRequest = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        Log.d("TAG", "Completed");
+                        try {
+                            object.put("ProfileUrl",object.getJSONObject("picture").getJSONObject("data").getString("url"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                         storeData(object);
                     }
                 });
                 Bundle bundle = new Bundle();
-                bundle.putString("fields", "email,id,first_name");
+                bundle.putString("fields", "email,id,first_name,picture.type(large)");
                 graphRequest.setParameters(bundle);
                 graphRequest.executeAsync();
             }
@@ -139,6 +144,7 @@ public class LogInFragment extends Fragment {
             // Signed in successfully, show authenticated UI.
             JSONObject obj = new JSONObject();
             try {
+                obj.put("ProfileUrl",account.getPhotoUrl());
                 obj.put("email", account.getEmail());
                 obj.put("id", account.getId());
                 obj.put("first_name", account.getDisplayName());
@@ -166,12 +172,11 @@ public class LogInFragment extends Fragment {
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         try {
-            editor.putString(getString(R.string.Name), jsonObject.get("first_name").toString());
+            editor.putString(getString(R.string.name), jsonObject.get("first_name").toString());
             editor.putString(getString(R.string.email), jsonObject.get("email").toString());
             editor.putString(getString(R.string.id), jsonObject.get("id").toString());
-            Log.e("email",jsonObject.get("email").toString());
-            Log.e("name",jsonObject.get("first_name").toString());
-            Log.e("id",jsonObject.get("id").toString());
+            editor.putString(getString(R.string.profileUrl), jsonObject.get("ProfileUrl").toString());
+
 
             /*we can use the following url to retrive the user profile pic.
 
@@ -181,6 +186,7 @@ public class LogInFragment extends Fragment {
 
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.w("Error in json","error");
         }
         editor.commit();
 
