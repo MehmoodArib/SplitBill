@@ -10,8 +10,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+public class AddEventFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
-public class AddEvent extends Fragment implements AdapterView.OnItemSelectedListener {
+
     private Spinner spinner;
     private static final String[] paths = {"Rs", "$", "Eu"};
 
@@ -20,12 +21,9 @@ public class AddEvent extends Fragment implements AdapterView.OnItemSelectedList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_event, container, false);
-
-
         spinner = view.findViewById(R.id.spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item, paths);
-
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
@@ -43,7 +41,7 @@ public class AddEvent extends Fragment implements AdapterView.OnItemSelectedList
                     // Whatever you want to happen when the second item gets selected
                     break;
                 case 2:
-                    // Whatever you want to happen when the thrid item gets selected
+                    // Whatever you want to happen when the third item gets selected
                     break;
 
             }

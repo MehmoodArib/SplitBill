@@ -1,15 +1,15 @@
 <resources>
+
+    <string-array name="Option">
+        <item>ADD NEW EVENT</item>
+        <item>JOIN EVENT</item>
+    </string-array>
+
+
     <string name="app_name">SplitBill</string>
     //fb used
     <string name="facebook_app_id">291524491512980</string>
     <string name="fb_login_protocol_scheme">fb291524491512980</string>
-
-    //shared preference
-    <string name="preference_file_key">com.example.mehmood.SplitBill.preference_file_key</string>
-    <string name="email">userEmail</string>
-    <string name="name">userName</string>
-    <string name="id">userId</string>
-    <string name="profileUrl">userProfileUrl</string>
 
 
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
@@ -18,12 +18,11 @@
 
     <string name="join_event">JOIN EVENT</string>
     <string name="add_event">ADD EVENT</string>
-    <string name="event_name">Event Name</string>
-    <string name="description">Description</string>
-    <string name="currency">Currency</string>
+    <string name="event_name">EVENT NAME</string>
+    <string name="description">DESCRIPTION</string>
+    <string name="currency">CURRENCY</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
 
 </resources>

@@ -5,9 +5,9 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/chat"
-            android:icon="@drawable/ic_chat"
-            android:title="Chat" />
+            android:id="@+id/home"
+            android:icon="@drawable/ic_home"
+            android:title="Home" />
         <item
             android:id="@+id/message"
             android:icon="@drawable/ic_message"
@@ -19,12 +19,17 @@
     </group>
 
 
-    <item android:title="Communicate">
+    <item android:title="MORE">
         <menu>
             <item
                 android:id="@+id/Share"
                 android:icon="@drawable/ic_share"
                 android:title="Share" />
+
+            <item
+                android:id="@+id/Rate"
+                android:icon="@drawable/ic_grade"
+                android:title="Rate the app" />
             <item
                 android:id="@+id/Logout"
                 android:icon="@drawable/ic_logout"

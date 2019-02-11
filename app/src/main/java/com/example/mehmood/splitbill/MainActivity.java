@@ -1,8 +1,7 @@
 package com.example.mehmood.splitbill;
 
 
-import android.app.ActivityManager;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -18,7 +17,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mehmood.splitbill.Utills.SplitBillUtility;
+import com.example.mehmood.splitbill.Utills.FragmentUtility;
+import com.example.mehmood.splitbill.Utills.SharedPreferencesUtility;
+import com.facebook.login.LoginManager;
+import com.squareup.picasso.Picasso;
+
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
@@ -52,62 +57,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new Message_Fragment()).commit();
 //            navigationView.setCheckedItem(R.id.message);
 //        }
-
-
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
-        String id1 = sharedPref.getString(getString(R.string.id), "");
+        String id1 =  SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.name);
         if (TextUtils.isEmpty(id1)) {
-            LogInFragment loginFragment = new LogInFragment();
-            SplitBillUtility.inflateFragment(loginFragment, getSupportFragmentManager(), R.id.fragementContainer, false, false, null);
+            Intent intent = new Intent(MainActivity.this,LogInActivity.class);
+            startActivity(intent);
+            finish();
+
         } else {
             EventListFragment eventListFragment = new EventListFragment();
-            SplitBillUtility.inflateFragment(eventListFragment, getSupportFragmentManager(), R.id.fragementContainer, false, false, null);
+            FragmentUtility.inflateFragment(eventListFragment, getSupportFragmentManager(), R.id.fragmentContainer, false, false, null);
 
 
         }
-        // setNavHeader();
+        setNavHeader();
 
     }
 
 
     public void setNavHeader() {
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
-        navHeaderNameTextView.setText(sharedPref.getString(getString(R.string.name), ""));
-        navHeaderEmailTextView.setText(sharedPref.getString(getString(R.string.email), ""));
-        String profileUrl = sharedPref.getString(getString(R.string.profileUrl), "");
-        ImageLoadTask imageLoadTask = new ImageLoadTask(profileUrl, navHeaderPicture);
-        imageLoadTask.execute();
+        navHeaderNameTextView.setText(SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.name));
+        navHeaderEmailTextView.setText(SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.email));
+        String profileUrl = SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.profileUrl);
+        Picasso.get().load(profileUrl).resize(250, 250).transform(new CropCircleTransformation()).into(navHeaderPicture);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.message:
-                // getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new Message_Fragment()).commit();
                 break;
             case R.id.profile:
-
                 ProfileFragment profileFragment = new ProfileFragment();
-                SplitBillUtility.inflateFragment(profileFragment, getSupportFragmentManager(), R.id.fragementContainer, true, true, null);
-
+                FragmentUtility.inflateFragment(profileFragment, getSupportFragmentManager(), R.id.fragmentContainer, true, true, null);
                 break;
-            case R.id.chat:
-                // getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new Chat_Fragment()).commit();
+            case R.id.home:
+                EventListFragment eventListFragment = new EventListFragment();
+                FragmentUtility.inflateFragment(eventListFragment, getSupportFragmentManager(), R.id.fragmentContainer, false, false, null);
                 break;
             case R.id.Share:
                 Toast.makeText(this, "Share", Toast.LENGTH_LONG).show();
                 break;
             case R.id.Logout:
-                // clearing app data
-                ((ActivityManager) getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData(); // note: it has a return value!
-
-
+                LoginManager.getInstance().logOut();
+                SharedPreferencesUtility.getInstance(this).clear();
+                Intent intent = new Intent(MainActivity.this,LogInActivity.class);
+                startActivity(intent);
+                finish();
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
-
     }
-
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {

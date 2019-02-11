@@ -6,13 +6,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 
-public class SplitBillUtility {
+public class FragmentUtility {
     public static void inflateFragment(Fragment iFragmentToInflate, FragmentManager iFragmentManager, int iContentFrameId, Boolean isAddToBacStack, Boolean isReplace, Bundle iBundle) {
         try {
             Fragment fragment = iFragmentManager.findFragmentByTag(iFragmentToInflate.getClass().getSimpleName());
 
             // Remove fragment if already added
-            if (fragment != null) SplitBillUtility.removeFragment(fragment, iFragmentManager);
+            if (fragment != null) FragmentUtility.removeFragment(fragment, iFragmentManager);
 
             FragmentTransaction transaction = iFragmentManager.beginTransaction();
             String TAG = iFragmentToInflate.getClass().getSimpleName();

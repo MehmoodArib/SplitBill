@@ -2,22 +2,18 @@ package com.example.mehmood.splitbill;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import com.example.mehmood.splitbill.Utills.SplitBillUtility;
+import com.example.mehmood.splitbill.Utills.SharedPreferencesUtility;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.login.LoginFragment;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -33,32 +29,27 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
-import static android.content.Context.MODE_PRIVATE;
 
-
-public class LogInFragment extends Fragment {
+public class LogInActivity extends AppCompatActivity {
     int RC_SIGN_IN = 0;    //Google Request code
     GoogleSignInClient mGoogleSignInClient;  // Google sign in client
     private LoginButton loginButton;   // facebook login button
     private CallbackManager callbackManager; // facebook callbackManager
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_log_in, container, false);
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_log_in);
 
 
         // Set the dimensions of the sign-in button.
-        SignInButton googleSignInButton = view.findViewById(R.id.sign_in_button);
+        SignInButton googleSignInButton = findViewById(R.id.sign_in_button);
         googleSignInButton.setSize(SignInButton.SIZE_WIDE);
         GoogleSignInOptions gso = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,10 +65,9 @@ public class LogInFragment extends Fragment {
 
 
         // facebook Login
-        loginButton = view.findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList("public_profile","email"));
+        loginButton = findViewById(R.id.login_button);
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
         callbackManager = CallbackManager.Factory.create();
-        loginButton.setFragment(this);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -86,7 +76,7 @@ public class LogInFragment extends Fragment {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         try {
-                            object.put("ProfileUrl",object.getJSONObject("picture").getJSONObject("data").getString("url"));
+                            object.put("ProfileUrl", object.getJSONObject("picture").getJSONObject("data").getString("url"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -113,7 +103,6 @@ public class LogInFragment extends Fragment {
         // End of Facebook Login
 
 
-        return view;
     }
 
     //Google SignIn
@@ -121,6 +110,7 @@ public class LogInFragment extends Fragment {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -144,7 +134,7 @@ public class LogInFragment extends Fragment {
             // Signed in successfully, show authenticated UI.
             JSONObject obj = new JSONObject();
             try {
-                obj.put("ProfileUrl",account.getPhotoUrl());
+                obj.put("ProfileUrl", account.getPhotoUrl());
                 obj.put("email", account.getEmail());
                 obj.put("id", account.getId());
                 obj.put("first_name", account.getDisplayName());
@@ -156,47 +146,29 @@ public class LogInFragment extends Fragment {
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w("TAG", "signInResult:failed code=" + e.getStatusCode());
+            Log.e("TAG", "signInResult:failed code=" + e.getStatusCode());
             // Handle here for login failed
         }
     }
 
-    // END OF GOOGLE SIGNIN
-
+    // END OF GOOGLE SIGN IN
 
 
     //Here we will call An Api to store the data on Our Server.//
     private void storeData(JSONObject jsonObject) {
-        Log.e("msg", jsonObject.toString());
-        Context context = getActivity();
-        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
+        Context context = this;
         try {
-            editor.putString(getString(R.string.name), jsonObject.get("first_name").toString());
-            editor.putString(getString(R.string.email), jsonObject.get("email").toString());
-            editor.putString(getString(R.string.id), jsonObject.get("id").toString());
-            editor.putString(getString(R.string.profileUrl), jsonObject.get("ProfileUrl").toString());
-
-
-            /*we can use the following url to retrive the user profile pic.
-
-             * graph.facebook.com/<facebook_user_id>/picture?type=large
-             *
-             * */
+            SharedPreferencesUtility.getInstance(context).put(SharedPreferencesUtility.Key.name, jsonObject.get("first_name").toString());
+            SharedPreferencesUtility.getInstance(context).put(SharedPreferencesUtility.Key.email, jsonObject.get("email").toString());
+            SharedPreferencesUtility.getInstance(context).put(SharedPreferencesUtility.Key.id, jsonObject.get("id").toString());
+            SharedPreferencesUtility.getInstance(context).put(SharedPreferencesUtility.Key.profileUrl, jsonObject.get("ProfileUrl").toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.w("Error in json","error");
         }
-        editor.commit();
-
-        //close the login fragment after storing data.
-        Fragment fragment = getFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
-        if(fragment != null)
-            getFragmentManager().beginTransaction().remove(fragment).commit();
-        EventListFragment eventListFragment = new EventListFragment();
-        SplitBillUtility.inflateFragment(eventListFragment, getActivity().getSupportFragmentManager(), R.id.fragementContainer, false, true, null);
-
+        Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }

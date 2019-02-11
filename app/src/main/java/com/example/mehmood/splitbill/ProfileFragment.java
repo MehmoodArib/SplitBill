@@ -1,17 +1,18 @@
 package com.example.mehmood.splitbill;
 
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import static android.content.Context.MODE_PRIVATE;
+import com.example.mehmood.splitbill.Utills.SharedPreferencesUtility;
+import com.squareup.picasso.Picasso;
+
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 public class ProfileFragment extends Fragment {
 private TextView mTextViewName;
@@ -26,14 +27,13 @@ private ImageView mImageView;
         mImageView = view.findViewById(R.id.profile_image);
         mTextViewEmail= view.findViewById(R.id.profile_email);
         mTextViewName= view.findViewById(R.id.profile_name);
-        SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
-        String userName = sharedPref.getString(getString(R.string.name), "");
-        String userEmail = sharedPref.getString(getString(R.string.email), "");
-        String profileUrl = sharedPref.getString(getString(R.string.profileUrl),"");
+        String userName = SharedPreferencesUtility.getInstance(getContext()).getString(SharedPreferencesUtility.Key.name);
+        String userEmail =SharedPreferencesUtility.getInstance(getContext()).getString(SharedPreferencesUtility.Key.email);
+        String profileUrl = SharedPreferencesUtility.getInstance(getContext()).getString(SharedPreferencesUtility.Key.profileUrl);
         mTextViewName.setText(userName);
         mTextViewEmail.setText(userEmail);
-        ImageLoadTask imageLoadTask = new ImageLoadTask(profileUrl,mImageView);
-        imageLoadTask.execute();
+        Picasso.get().load(profileUrl).resize(600, 600).transform(new CropCircleTransformation()).into(mImageView);
+
         return view;
     }
 
