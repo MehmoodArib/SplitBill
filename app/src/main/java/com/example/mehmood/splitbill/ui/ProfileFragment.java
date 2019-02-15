@@ -1,15 +1,16 @@
-package com.example.mehmood.splitbill;
+package com.example.mehmood.splitbill.ui;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mehmood.splitbill.Utills.SharedPreferencesUtility;
+import com.example.mehmood.splitbill.R;
+import com.example.mehmood.splitbill.utils.SharedPreferencesUtility;
 import com.squareup.picasso.Picasso;
 
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;

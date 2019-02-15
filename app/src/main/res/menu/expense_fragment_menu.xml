@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/expense_share"
+        android:icon="@drawable/ic_share"
+        android:title="Share"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/expense_edit"
+        android:title="Edit"
+        android:icon="@drawable/ic_edit"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/expense_sort_by"
+        android:title="Sort By"
+        android:icon="@drawable/ic_sort"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/expense_sort_by_title"
+                android:title="Title"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/expense_sort_by_amount"
+                android:title="Amount"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/expense_sort_by_date"
+                android:title="Expense date"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/expense_sort_by_payer"
+                android:title="Payer"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+</menu>

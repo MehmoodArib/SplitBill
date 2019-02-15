@@ -1,12 +1,13 @@
-package com.example.mehmood.splitbill;
+package com.example.mehmood.splitbill.ui;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatDialogFragment;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDialogFragment;
 
-import com.example.mehmood.splitbill.Utills.FragmentUtility;
+import com.example.mehmood.splitbill.R;
+import com.example.mehmood.splitbill.utils.FragmentUtility;
 
 public class ChooseAddOptionDialogFragment extends AppCompatDialogFragment {
     private String selection;

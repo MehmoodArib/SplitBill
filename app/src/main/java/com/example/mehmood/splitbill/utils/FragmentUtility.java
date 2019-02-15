@@ -1,9 +1,10 @@
-package com.example.mehmood.splitbill.Utills;
+package com.example.mehmood.splitbill.utils;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 
 public class FragmentUtility {
@@ -25,7 +26,8 @@ public class FragmentUtility {
             if (iBundle != null) iFragmentToInflate.setArguments(iBundle);
             transaction.commit();
         } catch (IllegalStateException e) {
-e.printStackTrace();        }
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -38,7 +40,7 @@ e.printStackTrace();        }
             trans.commit();
             iFragmentManager.popBackStackImmediate();
         } catch (Exception e) {
-e.printStackTrace();
+            e.printStackTrace();
         }
     }
 }

@@ -1,27 +1,28 @@
-package com.example.mehmood.splitbill;
+package com.example.mehmood.splitbill.ui;
 
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+
+import com.example.mehmood.splitbill.MainActivity;
+import com.example.mehmood.splitbill.R;
+import com.example.mehmood.splitbill.data.Event;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.mehmood.splitbill.Utills.MyAdapter;
+import com.example.mehmood.splitbill.utils.MyAdapter;
+
+import java.util.List;
 
 public class EventListFragment extends Fragment {
-    Event event1 = new Event("Shimla Trip", "Official");
-    Event event2 = new Event("Mumbai Trip", "Meeting");
-    Event event3 = new Event("Delhi Trip",null);
-    Event event4 = new Event("London",null);
-    Event event5 = new Event("Taj Mahal","Agra");
 
-    Event[] myEvent = {event1, event2,event3,event4,event5};
+    List<Event> events = MainActivity.myDataBase.myDao().getEvents();
 
     private RecyclerView mRecyclerView;
     private MyAdapter mAdapter;
@@ -37,7 +38,7 @@ public class EventListFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MyAdapter(myEvent);
+        mAdapter = new MyAdapter(events);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new MyAdapter.onItemClickListener() {
             @Override
@@ -62,7 +63,18 @@ public class EventListFragment extends Fragment {
            Here we will open the detailed fragment of the event
         *
         * */
-        Log.e("Clicked", "Clicked");
+        Event selectedEvent =events.get(position);
+        Intent intent = new Intent(getActivity(), DetailedEventActivity.class);
+        intent.putExtra("EventId", selectedEvent.getEventId());
+        startActivity(intent);
     }
 }
-
+/*Delete Event from local database
+*
+*Event event = new Event();
+* event.setId();
+* MainActivity.Mydatabase.mydao.deleteEvent(event);
+*
+*
+*
+* */

@@ -1,13 +1,15 @@
-package com.example.mehmood.splitbill;
+package com.example.mehmood.splitbill.ui;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.example.mehmood.splitbill.Utills.SharedPreferencesUtility;
+import com.example.mehmood.splitbill.MainActivity;
+import com.example.mehmood.splitbill.R;
+import com.example.mehmood.splitbill.utils.SharedPreferencesUtility;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
