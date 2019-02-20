@@ -11,9 +11,12 @@ import android.widget.Spinner;
 
 import com.example.mehmood.splitbill.MainActivity;
 import com.example.mehmood.splitbill.R;
+import com.example.mehmood.splitbill.data.Contact;
 import com.example.mehmood.splitbill.data.Event;
 import com.example.mehmood.splitbill.utils.FragmentUtility;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.ArrayList;
 
 import androidx.fragment.app.Fragment;
 
@@ -57,6 +60,13 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 Long tsLong = System.currentTimeMillis() / 1000;
                 String ts = tsLong.toString();
                 event.setEventId(ts);
+                Contact contact1 = new Contact("Arib","991169753");
+                Contact contact2 = new Contact("Amir","991169753");
+                ArrayList<Contact> participants = new ArrayList<>();
+                participants.add(contact1);
+                participants.add(contact2);
+                event.setParticipantsList(participants);
+                event.setTotalAmount("500");
                 MainActivity.myDataBase.myDao().addEvent(event);
 
                 Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag(AddEventFragment.class.getSimpleName());

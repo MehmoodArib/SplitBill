@@ -6,6 +6,7 @@ import android.widget.TextView;
 import com.example.mehmood.splitbill.MainActivity;
 import com.example.mehmood.splitbill.R;
 import com.example.mehmood.splitbill.data.Event;
+import com.example.mehmood.splitbill.utils.Utility;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
@@ -45,7 +46,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         mSubTitle = toolbar.findViewById(R.id.toolbar_sub_title);
         setSupportActionBar(toolbar);
         mTitle.setText(event.getEventName());
-        mSubTitle.setText(event.getEventName());
+        mSubTitle.setText(Utility.getNameList(event.getParticipantsList()));
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         tabLayout = findViewById(R.id.tabLayout);
         tabBalances = findViewById(R.id.balancesTab);
@@ -53,7 +54,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.pager);
         tabLayout.getTabAt(0).setIcon(tabIcons2[0]);
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), eventId);
         viewPager.setAdapter(viewPagerAdapter);
 
 //        tabLayout.setupWithViewPager(viewPager);
