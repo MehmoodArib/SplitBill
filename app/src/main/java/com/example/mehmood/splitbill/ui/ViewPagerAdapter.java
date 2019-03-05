@@ -9,12 +9,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
     private int numOfTabs;
-    private String eventId;
+    private Integer eventId;
     private ViewPagerAdapter(@NonNull FragmentManager fm, int numOfTabs) {
         super(fm);
         this.numOfTabs = numOfTabs;
     }
-    public ViewPagerAdapter(FragmentManager fm, int numOfTabs, String eventId)
+    public ViewPagerAdapter(FragmentManager fm, int numOfTabs, Integer eventId)
     {
         this(fm,numOfTabs);
         this.eventId=eventId;
@@ -28,7 +28,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 Fragment frg=new ExpensesFragment();
                 Bundle data=new Bundle();
-                data.putString("eventId",eventId);
+                data.putInt("eventId",eventId);
                 frg.setArguments(data);
                 return frg;
             case 1:

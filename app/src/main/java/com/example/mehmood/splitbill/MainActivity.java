@@ -1,19 +1,18 @@
 package com.example.mehmood.splitbill;
 
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.mehmood.splitbill.data.Contact;
-import com.example.mehmood.splitbill.data.Event;
-import com.example.mehmood.splitbill.data.MyDataBase;
 import com.example.mehmood.splitbill.ui.DetailedEventActivity;
 import com.example.mehmood.splitbill.ui.EventListFragment;
 import com.example.mehmood.splitbill.ui.LogInActivity;
@@ -24,15 +23,12 @@ import com.facebook.login.LoginManager;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.room.Room;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 
@@ -41,16 +37,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView navHeaderNameTextView;
     private TextView navHeaderEmailTextView;
     private ImageView navHeaderPicture;
-    public static MyDataBase myDataBase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // local db for testing only
-        myDataBase = Room.databaseBuilder(getApplicationContext(), MyDataBase.class, "eventDb").allowMainThreadQueries().build();
-        //hardcoding some Events   Delete it when connected with online database
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawer = findViewById(R.id.draw_layout);
@@ -67,10 +57,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navHeaderNameTextView = headerLayout.findViewById(R.id.nav_header_textViewName);
         navHeaderPicture = headerLayout.findViewById(R.id.nav_header_imageButton);
 
-        String id1 = SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.name);
-        if (TextUtils.isEmpty(id1)) {
+        String name = SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.name);
+        String email = SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.email);
+        String phone = SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.phone);
+        if (TextUtils.isEmpty(name)|TextUtils.isEmpty(email)|TextUtils.isEmpty(phone)) {
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
-            setEvents();
             startActivity(intent);
             finish();
 
@@ -81,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(R.id.home);
         }
         setNavHeader();
-
     }
 
     protected void onNewIntent(Intent intent) {
@@ -93,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String appLinkAction = intent.getAction();
         Uri appLinkData = intent.getData();
         if (Intent.ACTION_VIEW.equals(appLinkAction) && appLinkData != null) {
-            String eventId = appLinkData.getLastPathSegment();
+            Integer eventId = Integer.parseInt(appLinkData.getLastPathSegment());
             Intent intent2 = new Intent(this, DetailedEventActivity.class);
             intent2.putExtra("EventId", eventId);
             startActivity(intent2);
@@ -107,32 +97,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Picasso.get().load(profileUrl).resize(250, 250).transform(new CropCircleTransformation()).into(navHeaderPicture);
     }
 
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.message:
-                break;
             case R.id.profile:
                 ProfileFragment profileFragment = new ProfileFragment();
-                FragmentUtility.inflateFragment(profileFragment, getSupportFragmentManager(), R.id.fragmentContainer, false, true, null);
+                FragmentUtility.inflateFragment(profileFragment, getSupportFragmentManager(), R.id.fragmentContainer, true, false, null);
                 break;
             case R.id.home:
                 EventListFragment eventListFragment = new EventListFragment();
                 FragmentUtility.inflateFragment(eventListFragment, getSupportFragmentManager(), R.id.fragmentContainer, false, true, null);
                 break;
             case R.id.Share:
-                Toast.makeText(this, "Share", Toast.LENGTH_LONG).show();
+                try {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                    String shareMessage = "\nLet me recommend you this application\n\n";
+                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    startActivity(Intent.createChooser(shareIntent, "choose one"));
+                } catch (Exception e) {
+                    //e.toString();
+                }
+                break;
+            case R.id.Rate:
+                rateApp();
                 break;
             case R.id.Logout:
                 LoginManager.getInstance().logOut();
                 SharedPreferencesUtility.getInstance(this).clear();
-                Intent intent = new Intent(MainActivity.this,LogInActivity.class);
+                Intent intent = new Intent(MainActivity.this, LogInActivity.class);
                 startActivity(intent);
                 finish();
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -140,24 +143,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+        Log.e("etc", "etc");
     }
 
-    public void setEvents() {
+    public void rateApp() {
+        try {
+            Intent rateIntent = rateIntentForUrl("market://details");
+            startActivity(rateIntent);
+        } catch (ActivityNotFoundException e) {
+            Intent rateIntent = rateIntentForUrl("https://play.google.com/store/apps/details");
+            startActivity(rateIntent);
+        }
+    }
 
-        Contact contact1 = new Contact("Arib", "991169753");
-        Contact contact2 = new Contact("Amir", "991169753");
-        ArrayList<Contact> participants = new ArrayList<>();
-        participants.add(contact1);
-        participants.add(contact2);
-        Event event1 = new Event("Shimla Trip", "Official", "101", "INR", "250", participants);
-        Event event2 = new Event("Mumbai Trip", "Meeting", "102", "INR", "700", participants);
-        Event event3 = new Event("Delhi Trip", null, "103", "EURO", "600", participants);
-        Event event4 = new Event("London", null, "104", "DOLLAR", "650", participants);
-        Event event5 = new Event("Taj Mahal", "Agra", "105", "INR", "760", participants);
-        MainActivity.myDataBase.myDao().addEvent(event1);
-        MainActivity.myDataBase.myDao().addEvent(event2);
-        MainActivity.myDataBase.myDao().addEvent(event3);
-        MainActivity.myDataBase.myDao().addEvent(event4);
-        MainActivity.myDataBase.myDao().addEvent(event5);
+    private Intent rateIntentForUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("%s?id=%s", url, getPackageName())));
+        int flags = Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
+        if (Build.VERSION.SDK_INT >= 21) {
+            flags |= Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
+        } else {
+            //noinspection deprecation
+            flags |= Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET;
+        }
+        intent.addFlags(flags);
+        return intent;
     }
 }

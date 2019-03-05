@@ -1,4 +1,4 @@
-package com.example.mehmood.splitbill;
+package com.example.mehmood.splitbill.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,25 +6,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.mehmood.splitbill.R;
+import com.example.mehmood.splitbill.data.EventViewModel;
 import com.example.mehmood.splitbill.data.Expense;
 import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProviders;
 
 public class AddExpenseDialog extends DialogFragment {
     private TextInputEditText mTextInputEditTextExpenseName;
     private TextInputEditText mTextInputEditTextExpenseAmount;
     private Button mAddExpenseButton;
     private String expenseName;
-    private String expenseAmount;
-    private String eventId;
+    private Double expenseAmount;
     private Expense expense = new Expense();
+    private Integer eventId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getDialog().setTitle("ADD EXPENSE");
-        eventId = getArguments().getString("eventId");
+        final EventViewModel eventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
+        eventId = getArguments().getInt("eventId", -1);
         View view = inflater.inflate(R.layout.add_expense_dialog, container,
                 false);
         mAddExpenseButton = view.findViewById(R.id.buttonAddExpense);
@@ -38,13 +42,25 @@ public class AddExpenseDialog extends DialogFragment {
                 expense.setExpenseName(expenseName);
                 expense.setExpenseAmount(expenseAmount);
                 expense.setExpenseEventId(eventId);
-                MainActivity.myDataBase.myDao().addExpense(expense);
-               // ExpenseAdapter.notifyDataSetChanged();
+
+                eventViewModel.addExpense(expense);
+                eventViewModel.getExpenseOfEvent(eventId);
                 dismiss();
             }
         });
 
         return view;
+    }
+
+    private boolean validateExpenseAmount() {
+        expenseAmount = Double.valueOf(mTextInputEditTextExpenseAmount.getText().toString().trim());
+        if (expenseAmount <= 0) {
+            mTextInputEditTextExpenseAmount.setError("Expense Should be greater then 0");
+            return false;
+        } else {
+            mTextInputEditTextExpenseAmount.setError(null);
+            return true;
+        }
     }
 
     @Override
@@ -70,17 +86,7 @@ public class AddExpenseDialog extends DialogFragment {
             return true;
         }
     }
-
-    private boolean validateExpenseAmount() {
-        expenseAmount = mTextInputEditTextExpenseAmount.getText().toString().trim();
-        if (expenseAmount.length() > 10) {
-            mTextInputEditTextExpenseAmount.setError("Maximum 10 digit's Allowed");
-            return false;
-        } else {
-            mTextInputEditTextExpenseAmount.setError(null);
-            return true;
-        }
     }
 
-}
+
 

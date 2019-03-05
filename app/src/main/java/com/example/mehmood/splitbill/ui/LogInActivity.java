@@ -6,9 +6,11 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.example.mehmood.splitbill.MainActivity;
 import com.example.mehmood.splitbill.R;
+import com.example.mehmood.splitbill.utils.FragmentUtility;
 import com.example.mehmood.splitbill.utils.SharedPreferencesUtility;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -168,9 +170,10 @@ public class LogInActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Intent intent = new Intent(LogInActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
+       PhoneFragment phoneFragment = new PhoneFragment();
+       FragmentUtility.inflateFragment(phoneFragment, getSupportFragmentManager(), R.id.fragmentContainerLogin, false, true, null);
+        LinearLayout linearLayout = findViewById(R.id.loginButtons);
+        linearLayout.setVisibility(View.GONE);
     }
 
 }

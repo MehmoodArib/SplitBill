@@ -7,6 +7,7 @@
         android:icon="@drawable/ic_share"
         android:title="Share"
         app:showAsAction="never" />
+
     <item
         android:id="@+id/expense_edit"
         android:title="Edit"

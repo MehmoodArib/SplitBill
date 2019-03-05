@@ -3,15 +3,17 @@ package com.example.mehmood.splitbill.ui;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.example.mehmood.splitbill.MainActivity;
 import com.example.mehmood.splitbill.R;
 import com.example.mehmood.splitbill.data.Event;
+import com.example.mehmood.splitbill.data.EventViewModel;
 import com.example.mehmood.splitbill.utils.Utility;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 public class DetailedEventActivity extends AppCompatActivity {
@@ -23,6 +25,7 @@ public class DetailedEventActivity extends AppCompatActivity {
     private TabItem tabBalances;
     private TextView mTitle;
     private TextView mSubTitle;
+    Event event1;
 
 
     private int[] tabIcons = {
@@ -38,15 +41,24 @@ public class DetailedEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_event);
-        String eventId = getIntent().getExtras().getString("EventId");
-        Event event = MainActivity.myDataBase.myDao().getEvent(eventId);
-        setTitle(event.getEventName());
+        Integer eventId = getIntent().getExtras().getInt("EventId");
+        EventViewModel eventViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
+        eventViewModel.getEvent(eventId);
+        eventViewModel.getEvent().observe(this, new Observer<Event>() {
+            @Override
+            public void onChanged(Event event) {
+                setTitle(event.getEventName());
+                mTitle.setText(event.getEventName());
+                mSubTitle.setText(Utility.getNameList(event.getParticipantsList()));
+            }
+        });
+
         toolbar = findViewById(R.id.toolbar);
         mTitle = toolbar.findViewById(R.id.toolbar_title);
         mSubTitle = toolbar.findViewById(R.id.toolbar_sub_title);
         setSupportActionBar(toolbar);
-        mTitle.setText(event.getEventName());
-        mSubTitle.setText(Utility.getNameList(event.getParticipantsList()));
+
+
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         tabLayout = findViewById(R.id.tabLayout);
         tabBalances = findViewById(R.id.balancesTab);
@@ -86,4 +98,5 @@ public class DetailedEventActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
     }
+
 }

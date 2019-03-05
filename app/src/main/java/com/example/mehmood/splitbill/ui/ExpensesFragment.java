@@ -11,10 +11,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mehmood.splitbill.AddExpenseDialog;
-import com.example.mehmood.splitbill.MainActivity;
 import com.example.mehmood.splitbill.R;
 import com.example.mehmood.splitbill.data.Event;
+import com.example.mehmood.splitbill.data.EventViewModel;
 import com.example.mehmood.splitbill.data.Expense;
 import com.example.mehmood.splitbill.utils.ExpenseAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,62 +24,84 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static androidx.recyclerview.widget.ItemTouchHelper.LEFT;
+
 public class ExpensesFragment extends Fragment {
-    List<Expense> expenses;
-    private RecyclerView mRecyclerView;
-    private ExpenseAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private TextView mTotalExpense;
     private FloatingActionButton mFloatingActionButton;
+    private EventViewModel eventViewModel;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        final String eventId = getArguments().getString("eventId");
-        Event event = MainActivity.myDataBase.myDao().getEvent(eventId);
-        expenses = MainActivity.myDataBase.myDao().getExpenses(eventId);
+        final Integer eventId = getArguments().getInt("eventId");
         View view = inflater.inflate(R.layout.fragment_expenses, container, false);
         mFloatingActionButton = view.findViewById(R.id.add_new_expense_button);
         mTotalExpense = view.findViewById(R.id.event_Total_Expense);
-        mTotalExpense.setText(event.getTotalAmount());
-        mRecyclerView = view.findViewById(R.id.expense_recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ExpenseAdapter(expenses);
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener(new ExpenseAdapter.onItemClickListener() {
+
+        RecyclerView recyclerView = view.findViewById(R.id.expense_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+        final ExpenseAdapter expenseAdapter = new ExpenseAdapter();
+        recyclerView.setAdapter(expenseAdapter);
+        eventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
+        eventViewModel.getExpenseOfEvent(eventId);
+        eventViewModel.getEvent(eventId);
+        eventViewModel.getEvent().observe(this, new Observer<Event>() {
             @Override
-            public void onItemClick(int position) {
-                clickedItem(position);
+            public void onChanged(Event event) {
+                mTotalExpense.setText(String.valueOf(event.getTotalAmount()));
             }
         });
 
+        eventViewModel.getExpenseListOfEvent().observe(this, new Observer<List<Expense>>() {
+            @Override
+            public void onChanged(List<Expense> expenses) {
+                expenseAdapter.submitList(expenses);
+            }
+        });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+                expenseAdapter.getExpenseAt(viewHolder.getAdapterPosition());
+                eventViewModel.deleteExpense(expenseAdapter.getExpenseAt(viewHolder.getAdapterPosition()));
+                eventViewModel.getExpenseOfEvent(eventId);
+            }
+        }).attachToRecyclerView(recyclerView);
+
+        expenseAdapter.setOnItemClickListner(new ExpenseAdapter.OnItemClickListner() {
+            @Override
+            public void onItemClick(Expense expense) {
+
+
+            }
+        });
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager ft = (getActivity()).getSupportFragmentManager();
                 AddExpenseDialog fragment = new AddExpenseDialog();
                 Bundle bundle = new Bundle();
-                bundle.putString("eventId", eventId);
+                bundle.putInt("eventId", eventId);
                 fragment.setArguments(bundle);
                 fragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyDialogFragmentStyle);
                 fragment.show(ft, null);
             }
         });
         return view;
-    }
-
-    public void clickedItem(int position) {
-        /*  Here we will open the detailed fragment of the expense   */
-        Expense selectedExpense = expenses.get(position);
-//        Intent intent = new Intent(getActivity(), DetailedEventActivity.class);
-//        intent.putExtra("EventId", selectedEvent.getEventId());
-//        startActivity(intent);
     }
 
     @Override
@@ -111,4 +132,5 @@ public class ExpensesFragment extends Fragment {
         } else
             return false;
     }
+
 }

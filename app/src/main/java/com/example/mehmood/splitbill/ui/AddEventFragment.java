@@ -9,29 +9,32 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import com.example.mehmood.splitbill.MainActivity;
 import com.example.mehmood.splitbill.R;
 import com.example.mehmood.splitbill.data.Contact;
 import com.example.mehmood.splitbill.data.Event;
+import com.example.mehmood.splitbill.data.EventViewModel;
 import com.example.mehmood.splitbill.utils.FragmentUtility;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 public class AddEventFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
 
     private Spinner spinner;
-    TextInputLayout mTextInputLayoutEventName;
-    TextInputLayout mTextInputLayoutEventDesc;
-    Button mAddButton;
-    String eventCurrency;
-    String eventName;
-    String eventDesc;
-    Event event = new Event();
+    private TextInputLayout mTextInputLayoutEventName;
+    private TextInputLayout mTextInputLayoutEventDesc;
+    private Button mAddButton;
+    private String eventCurrency;
+    private String eventName;
+    private String eventDesc;
+    private Event event = new Event();
     private static final String[] paths = {"Rs", "$", "Eu"};
+    private ArrayList<Contact> participants = new ArrayList<>();
+    private EventViewModel eventViewModel;
 
 
 
@@ -44,6 +47,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         mTextInputLayoutEventDesc = view.findViewById(R.id.textInputLayoutNewEventDescription);
         mTextInputLayoutEventName = view.findViewById(R.id.textInputLayoutNewEventName);
         mAddButton = view.findViewById(R.id.buttonAdd);
+        eventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item, paths);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -55,29 +59,21 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             public void onClick(View v) {
                 if (!validateEventName()) return;
                 if (!validateEventDesc()) return;
-                event.setEventName(eventName);
-                event.setEventDesc(eventDesc);
-                Long tsLong = System.currentTimeMillis() / 1000;
-                String ts = tsLong.toString();
-                event.setEventId(ts);
+                //TO-DO add contact picker
+                //here we are hardcoding the participants list
                 Contact contact1 = new Contact("Arib","991169753");
                 Contact contact2 = new Contact("Amir","991169753");
-                ArrayList<Contact> participants = new ArrayList<>();
                 participants.add(contact1);
                 participants.add(contact2);
-                event.setParticipantsList(participants);
-                event.setTotalAmount("500");
-                MainActivity.myDataBase.myDao().addEvent(event);
+                setEvent();
+                eventViewModel.addEvent(event);
 
                 Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag(AddEventFragment.class.getSimpleName());
                 if (fragment != null)
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-                EventListFragment eventListFragment = new EventListFragment();
-                FragmentUtility.inflateFragment(eventListFragment, getActivity().getSupportFragmentManager(), R.id.fragmentContainer, false, false, null);
+                    getActivity().getSupportFragmentManager().popBackStack();
+
             }
         });
-
-
         return view;
     }
 
@@ -100,7 +96,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            // TODO Auto-generated method stub
+            eventCurrency = "INR";
         }
 
     private boolean validateEventName() {
@@ -129,5 +125,13 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             }
         }
 
+    public void setEvent() {
+        event.setEventName(eventName);
+        event.setEventDesc(eventDesc);
+        event.setCurrency(eventCurrency);
+        event.setParticipantsList(participants);
+        event.setTotalAmount(0.0);
     }
+    }
+
 

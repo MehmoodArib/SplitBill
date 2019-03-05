@@ -2,7 +2,6 @@ package com.example.mehmood.splitbill.data;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -12,32 +11,33 @@ public class Event {
     private String eventName;
     private String eventDesc;
     private String currency;
-    private String totalAmount;
-    @PrimaryKey
-    @NonNull
-    private String eventId;
-    private ArrayList<Contact> participantsList;
+    private Double totalAmount;
 
+    @PrimaryKey(autoGenerate = true)
+    private Integer eventId;
 
-
-    public Event(String eventName, String eventDesc, String eventId, String currency, String totalAmount, ArrayList<Contact> participantsList) {
+    public Event(String eventName, String eventDesc, String currency, Double totalAmount, ArrayList<Contact> participantsList) {
         this.eventName = eventName;
         this.eventDesc = eventDesc;
-        this.eventId = eventId;
         this.currency = currency;
         this.participantsList = participantsList;
         this.totalAmount = totalAmount;
+    }
+    private ArrayList<Contact> participantsList;
+
+    public Integer getEventId() {
+        return eventId;
     }
     @Ignore
     public Event(){
 
     }
 
-    public String getTotalAmount() {
+    public Double getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(String totalAmount) {
+    public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
     }
 
@@ -65,11 +65,7 @@ public class Event {
         this.eventDesc = eventDesc;
     }
 
-    public String getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(String eventId) {
+    public void setEventId(Integer eventId) {
         this.eventId = eventId;
     }
 
@@ -79,6 +75,10 @@ public class Event {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public String toString(){
+        return this.getEventName()+" "+this.getEventDesc();
     }
 }
 

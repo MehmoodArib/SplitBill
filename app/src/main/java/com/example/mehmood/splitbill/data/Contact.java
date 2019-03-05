@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 public class Contact {
     String name;
     String number;
-
     public String getName() {
         return name;
     }

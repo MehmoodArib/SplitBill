@@ -46,7 +46,8 @@ import android.content.SharedPreferences;
             email,
             name,
             id,
-            profileUrl
+            profileUrl,
+            phone
         }
 
         private SharedPreferencesUtility(Context context) {

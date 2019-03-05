@@ -7,34 +7,33 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Expense {
     @PrimaryKey(autoGenerate = true)
-    private int expenseId;
+    private Integer expenseId;
     private String expenseName;
-    private String expenseAmount;
-    private String expenseEventId;
+    private Double expenseAmount;
+    private Integer expenseEventId;
 
-    public Expense(String expenseName, String expenseAmount, String expenseEventId) {
+    public Expense(String expenseName, Double expenseAmount, Integer expenseEventId) {
         this.expenseName = expenseName;
         this.expenseAmount = expenseAmount;
         this.expenseEventId = expenseEventId;
     }
     @Ignore
     public Expense() {
-
     }
 
-    public int getExpenseId() {
+    public Integer getExpenseId() {
         return expenseId;
     }
 
-    public void setExpenseId(int expenseId) {
+    public void setExpenseId(Integer expenseId) {
         this.expenseId = expenseId;
     }
 
-    public String getExpenseEventId() {
+    public Integer getExpenseEventId() {
         return expenseEventId;
     }
 
-    public void setExpenseEventId(String expenseEventId) {
+    public void setExpenseEventId(Integer expenseEventId) {
         this.expenseEventId = expenseEventId;
     }
 
@@ -46,11 +45,11 @@ public class Expense {
         this.expenseName = expenseName;
     }
 
-    public String getExpenseAmount() {
+    public Double getExpenseAmount() {
         return expenseAmount;
     }
 
-    public void setExpenseAmount(String expenseAmount) {
+    public void setExpenseAmount(Double expenseAmount) {
         this.expenseAmount = expenseAmount;
     }
 
