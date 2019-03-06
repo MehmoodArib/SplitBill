@@ -1,4 +1,4 @@
-package com.example.mehmood.splitbill.ui;
+package com.example.mehmood.splitbill.ui.Profile;
 
 
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.example.mehmood.splitbill.App;
 import com.example.mehmood.splitbill.R;
-import com.example.mehmood.splitbill.utils.SharedPreferencesUtility;
+import com.example.mehmood.splitbill.utils.Utilities.SharedPreferencesUtility;
 import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.Picasso;
 
@@ -35,6 +35,7 @@ private ImageView mImageView;
                              Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        setHasOptionsMenu(false);
         mImageView = view.findViewById(R.id.profile_image);
         mTextViewEmail= view.findViewById(R.id.profile_email);
         mTextViewName= view.findViewById(R.id.profile_name);
@@ -67,9 +68,9 @@ private ImageView mImageView;
             @Override
             public void afterTextChanged(Editable s) {
 
-                if (validateUserName()&!mTextInputEditTextUserName.getText().toString().equals(userName)) ;
+                if (validatePhone()& !mTextInputEditTextUserPhone.getText().toString().equals(phone) | validateUserName()&!mTextInputEditTextUserName.getText().toString().equals(userName)) ;
                 {
-                    msaveUserInfoButton.setVisibility(View.VISIBLE);
+                    msaveUserInfoButton.setEnabled(true);
                 }
             }
         });
@@ -89,10 +90,9 @@ private ImageView mImageView;
             @Override
             public void afterTextChanged(Editable s) {
 
-                if (validatePhone()& !mTextInputEditTextUserPhone.getText().toString().equals(phone)) ;
+                if (validatePhone()& !mTextInputEditTextUserPhone.getText().toString().equals(phone) | validateUserName()&!mTextInputEditTextUserName.getText().toString().equals(userName)) ;
                 {
-                    msaveUserInfoButton.setVisibility(View.VISIBLE);
-                    msaveUserInfoButton.setEnabled(false);
+                    msaveUserInfoButton.setEnabled(true);
                 }
             }
         });
@@ -103,14 +103,14 @@ private ImageView mImageView;
                 SharedPreferencesUtility.getInstance(App.getContext()).put(SharedPreferencesUtility.Key.name, mTextInputEditTextUserName.getText().toString());
                 SharedPreferencesUtility.getInstance(App.getContext()).put(SharedPreferencesUtility.Key.phone, mTextInputEditTextUserPhone.getText().toString());
                 Toast.makeText(getContext(),"Saved",Toast.LENGTH_SHORT).show();
-                msaveUserInfoButton.setVisibility(View.GONE);
+                msaveUserInfoButton.setEnabled(false);
             }
         });
         return view;
     }
     private boolean validateUserName () {
         String userName = mTextInputEditTextUserName.getText().toString().trim();
-        if (userName.length() > 10||userName.length()<1) {
+        if (userName.length() > 20||userName.length()<1) {
             mTextInputEditTextUserName.setError("Minimum 1 & Maximum 10 characters Allowed");
             return false;
         } else {
@@ -120,7 +120,7 @@ private ImageView mImageView;
     }
     private boolean validatePhone () {
         String phone = mTextInputEditTextUserPhone.getText().toString().trim();
-        if (phone.length()!=10) {
+        if (phone.length()!=13) {
             mTextInputEditTextUserPhone.setError("In-Valid Number");
             return false;
         } else {

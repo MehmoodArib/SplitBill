@@ -1,4 +1,4 @@
-package com.example.mehmood.splitbill.utils;
+package com.example.mehmood.splitbill.utils.Utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;

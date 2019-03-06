@@ -1,17 +1,15 @@
-package com.example.mehmood.splitbill.ui;
+package com.example.mehmood.splitbill.ui.LogIn;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.example.mehmood.splitbill.MainActivity;
 import com.example.mehmood.splitbill.R;
-import com.example.mehmood.splitbill.utils.FragmentUtility;
-import com.example.mehmood.splitbill.utils.SharedPreferencesUtility;
+import com.example.mehmood.splitbill.utils.Utilities.FragmentUtility;
+import com.example.mehmood.splitbill.utils.Utilities.SharedPreferencesUtility;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -33,6 +31,19 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+/**
+ * This Activity is launched by MainActivity if user is not Logged In.
+ *
+ * LoginActivity Use Facebook and Google Api to get User information.
+ * user can choose anyone.
+ *
+ * After Login Completion And Saving data to shared Preference Activity Launch Phone fragment
+ * where user needs to enter's his/her phone number.
+ */
+
+
 
 public class LogInActivity extends AppCompatActivity {
     int RC_SIGN_IN = 0;    //Google Request code
@@ -44,7 +55,6 @@ public class LogInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
-
 
         // Set the dimensions of the sign-in button.
         SignInButton googleSignInButton = findViewById(R.id.sign_in_button);
@@ -105,7 +115,6 @@ public class LogInActivity extends AppCompatActivity {
             }
         });
         // End of Facebook Login
-
 
     }
 

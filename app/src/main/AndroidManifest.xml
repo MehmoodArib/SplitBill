@@ -60,9 +60,9 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.LogInActivity" />
+        <activity android:name=".ui.LogIn.LogInActivity" />
         <activity
-            android:name=".ui.DetailedEventActivity"
+            android:name=".ui.Event.DetailedEventActivity"
             android:theme="@style/AppTheme2"/>
     </application>
 

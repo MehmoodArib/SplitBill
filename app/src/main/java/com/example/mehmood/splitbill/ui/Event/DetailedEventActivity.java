@@ -1,4 +1,4 @@
-package com.example.mehmood.splitbill.ui;
+package com.example.mehmood.splitbill.ui.Event;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -6,7 +6,8 @@ import android.widget.TextView;
 import com.example.mehmood.splitbill.R;
 import com.example.mehmood.splitbill.data.Event;
 import com.example.mehmood.splitbill.data.EventViewModel;
-import com.example.mehmood.splitbill.utils.Utility;
+import com.example.mehmood.splitbill.utils.Adapters.ViewPagerAdapter;
+import com.example.mehmood.splitbill.utils.Utilities.Utility;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
@@ -16,18 +17,18 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
+/**
+ * This activity is Launched on click of the event in eventList created by EventListFragment
+ * It shows the details of that event
+ * this activity launch two fragments in ViewPager Expense fragment and Balance Fragment
+ * ExpenseFragment shows the List of the Expense in Event
+ * balance fragment shows the balances of the participants.
+ */
 public class DetailedEventActivity extends AppCompatActivity {
-    private Toolbar toolbar;
-    private ViewPager viewPager;
-    private ViewPagerAdapter viewPagerAdapter;
-    private TabLayout tabLayout;
-    private TabItem tabExpences;
-    private TabItem tabBalances;
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
     private TextView mTitle;
     private TextView mSubTitle;
-    Event event1;
-
-
     private int[] tabIcons = {
             R.drawable.expense_ic,
             R.drawable.trans_ic,
@@ -53,28 +54,28 @@ public class DetailedEventActivity extends AppCompatActivity {
             }
         });
 
-        toolbar = findViewById(R.id.toolbar);
-        mTitle = toolbar.findViewById(R.id.toolbar_title);
-        mSubTitle = toolbar.findViewById(R.id.toolbar_sub_title);
-        setSupportActionBar(toolbar);
+        Toolbar mToolbar = findViewById(R.id.toolbar);
+        mTitle = mToolbar.findViewById(R.id.toolbar_title);
+        mSubTitle = mToolbar.findViewById(R.id.toolbar_sub_title);
+        setSupportActionBar(mToolbar);
 
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        tabLayout = findViewById(R.id.tabLayout);
-        tabBalances = findViewById(R.id.balancesTab);
-        tabExpences = findViewById(R.id.expensesTab);
-        viewPager = findViewById(R.id.pager);
-        tabLayout.getTabAt(0).setIcon(tabIcons2[0]);
-        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), eventId);
-        viewPager.setAdapter(viewPagerAdapter);
+        mTabLayout = findViewById(R.id.tabLayout);
+        TabItem tabBalances = findViewById(R.id.balancesTab);
+        TabItem tabExpences = findViewById(R.id.expensesTab);
+        mViewPager = findViewById(R.id.pager);
+        mTabLayout.getTabAt(0).setIcon(tabIcons2[0]);
+        mTabLayout.getTabAt(1).setIcon(tabIcons[1]);
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), mTabLayout.getTabCount(), eventId);
+        mViewPager.setAdapter(viewPagerAdapter);
 
-//        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        //mTabLayout.setupWithViewPager(mViewPager);
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-                tabLayout.getTabAt(tab.getPosition()).setIcon(tabIcons2[tab.getPosition()]);
+                mViewPager.setCurrentItem(tab.getPosition());
+                mTabLayout.getTabAt(tab.getPosition()).setIcon(tabIcons2[tab.getPosition()]);
 
                 if (tab.getPosition() == 0) {
 
@@ -87,7 +88,7 @@ public class DetailedEventActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tabLayout.getTabAt(tab.getPosition()).setIcon(tabIcons[tab.getPosition()]);
+                mTabLayout.getTabAt(tab.getPosition()).setIcon(tabIcons[tab.getPosition()]);
             }
 
             @Override
@@ -95,7 +96,7 @@ public class DetailedEventActivity extends AppCompatActivity {
 
             }
         });
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
     }
 

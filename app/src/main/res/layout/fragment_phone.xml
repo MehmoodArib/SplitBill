@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    tools:context=".ui.PhoneFragment"
+    tools:context=".ui.LogIn.PhoneFragment"
     android:background="#ffff">
 
 
@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         app:counterEnabled="true"
-        app:counterMaxLength="10"
+        app:counterMaxLength="13"
         app:errorEnabled="true">
 
         <requestFocus />
@@ -37,6 +37,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Verify" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/verifyButton"
+        android:text="This will help you share the data between the other participants."/>
 
 
 </RelativeLayout>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.DetailedEventActivity">
+    tools:context=".ui.Event.DetailedEventActivity">
 
     <include layout="@layout/toolbar" />
 

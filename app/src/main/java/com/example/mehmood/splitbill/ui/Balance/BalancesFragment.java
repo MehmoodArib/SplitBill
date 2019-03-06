@@ -1,4 +1,4 @@
-package com.example.mehmood.splitbill.ui;
+package com.example.mehmood.splitbill.ui.Balance;
 
 
 import android.os.Bundle;

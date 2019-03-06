@@ -13,15 +13,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mehmood.splitbill.ui.DetailedEventActivity;
-import com.example.mehmood.splitbill.ui.EventListFragment;
-import com.example.mehmood.splitbill.ui.LogInActivity;
-import com.example.mehmood.splitbill.ui.ProfileFragment;
-import com.example.mehmood.splitbill.utils.FragmentUtility;
-import com.example.mehmood.splitbill.utils.SharedPreferencesUtility;
+import com.example.mehmood.splitbill.ui.Event.AddEventFragment;
+import com.example.mehmood.splitbill.ui.Event.DetailedEventActivity;
+import com.example.mehmood.splitbill.ui.Event.EventListFragment;
+import com.example.mehmood.splitbill.ui.LogIn.LogInActivity;
+import com.example.mehmood.splitbill.ui.Profile.ProfileFragment;
+import com.example.mehmood.splitbill.utils.Utilities.FragmentUtility;
+import com.example.mehmood.splitbill.utils.Utilities.SharedPreferencesUtility;
 import com.facebook.login.LoginManager;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
+import com.wafflecopter.multicontactpicker.ContactResult;
+import com.wafflecopter.multicontactpicker.MultiContactPicker;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -32,11 +37,25 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 
+/**
+ * This is our Launch Activity
+ * from here we check weather the user is log-ed-In or Not
+ * by checking the shared preference values null or not.
+ * <p>
+ * if values are null it means user not log-ed-In.
+ * and we launch Login Activity.
+ * <p>
+ * else we launch EventList Fragment.
+ */
+
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
     private TextView navHeaderNameTextView;
     private TextView navHeaderEmailTextView;
     private ImageView navHeaderPicture;
+    public static final int CONTACT_PICKER_REQUEST = 0; //Contact picker Request Code.
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FragmentUtility.inflateFragment(eventListFragment, getSupportFragmentManager(), R.id.fragmentContainer, false, true, null);
             navigationView.setCheckedItem(R.id.home);
         }
-        setNavHeader();
+        setNavHeader();//fill the NavHeader Values names,email&photo
     }
 
     protected void onNewIntent(Intent intent) {
@@ -167,5 +186,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         intent.addFlags(flags);
         return intent;
+    }
+
+    /**
+     * This code In Activity is for choosing contacts used in Add Event Fragment
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CONTACT_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                List<ContactResult> results = MultiContactPicker.obtainResult(data);
+                AddEventFragment addEventFragment = (AddEventFragment) getSupportFragmentManager().findFragmentByTag(AddEventFragment.class.getSimpleName());
+                addEventFragment.setContacts(results);
+
+            } else if (resultCode == RESULT_CANCELED) {
+                System.out.println("User closed the picker without selecting items.");
+            }
+        }
+    }
+
+    public interface ContactInfo {
+        void setContacts(List<ContactResult> contacts);
     }
 }

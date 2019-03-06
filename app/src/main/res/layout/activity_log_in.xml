@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/log_in_background"
-    tools:context=".ui.LogInActivity"
+    tools:context=".ui.LogIn.LogInActivity"
     tools:layout_editor_absoluteX="20dp"
     tools:layout_editor_absoluteY="81dp">
 

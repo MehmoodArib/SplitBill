@@ -1,4 +1,4 @@
-package com.example.mehmood.splitbill.utils;
+package com.example.mehmood.splitbill.utils.Utilities;
 
 import android.os.Bundle;
 
