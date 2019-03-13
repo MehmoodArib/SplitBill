@@ -12,7 +12,7 @@ public class Event {
     private String eventDesc;
     private String currency;
     private Double totalAmount;
-
+    private ArrayList<Contact> participantsList;
     @PrimaryKey(autoGenerate = true)
     private Integer eventId;
 
@@ -23,7 +23,6 @@ public class Event {
         this.participantsList = participantsList;
         this.totalAmount = totalAmount;
     }
-    private ArrayList<Contact> participantsList;
 
     public Integer getEventId() {
         return eventId;

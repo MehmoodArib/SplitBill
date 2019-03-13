@@ -1,13 +1,14 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-    <style name="AppTheme2" parent="Theme.AppCompat.Light.NoActionBar">
+
+    <style name="AppTheme2" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -18,7 +19,8 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="MyDialogFragmentStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+
+    <style name="MyDialogFragmentStyle" parent="Theme.MaterialComponents.Light.Dialog.Alert">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">false</item>
         <item name="android:windowActionBar">false</item>
@@ -35,8 +37,9 @@
         <item name="mcpListPopupWindowStyleTheme">@style/MyCustomToolbarTheme</item>
     </style>
 
-    <style name="MyCustomToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
+    <style name="MyCustomToolbarTheme" parent="ThemeOverlay.MaterialComponents.Light">
         <item name="android:textColorPrimary">@color/colorAccent</item>
         <item name="android:textColorSecondary">@color/colorAccent</item>
     </style>
+
 </resources>

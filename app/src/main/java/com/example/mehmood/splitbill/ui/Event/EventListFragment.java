@@ -15,6 +15,8 @@ import com.example.mehmood.splitbill.data.Event;
 import com.example.mehmood.splitbill.data.EventViewModel;
 import com.example.mehmood.splitbill.ui.ChooseAddOptionDialogFragment;
 import com.example.mehmood.splitbill.utils.Adapters.EventAdapter;
+import com.example.mehmood.splitbill.utils.Utilities.FragmentUtility;
+import com.example.mehmood.splitbill.utils.Utilities.Utility;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -98,9 +100,16 @@ public class EventListFragment extends Fragment {
             @Override
             public void onItemClick(Event event) {
                 Intent intent = new Intent(getActivity(), DetailedEventActivity.class);
-                intent.putExtra("EventId", event.getEventId());
+                intent.putExtra(Utility.eventId, event.getEventId());
                 startActivity(intent);
+            }
 
+            @Override
+            public void onEditClick(Event event) {
+                EditEventFragment editEventFragment = new EditEventFragment();
+                Bundle data = new Bundle();
+                data.putInt(Utility.eventId, event.getEventId());
+                FragmentUtility.inflateFragment(editEventFragment, getActivity().getSupportFragmentManager(), R.id.fragmentContainer, true, false, data);
             }
         });
     }
@@ -114,7 +123,6 @@ public class EventListFragment extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
                 mEventAdapter.getEventAt(viewHolder.getAdapterPosition());
                 mEventViewModel.deleteEvent(mEventAdapter.getEventAt(viewHolder.getAdapterPosition()));
             }

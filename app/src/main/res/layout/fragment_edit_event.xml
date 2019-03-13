@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:layout_marginTop="16dp"
-    tools:context=".ui.Event.AddEventFragment">
+    android:padding="16dp"
+    android:background="#ffff"
+    tools:context=".ui.Event.EditEventFragment">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayoutNewEventName"
+        android:id="@+id/textInputLayoutEditEventName"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,17 +20,17 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/inputTextHintEventName"
+            android:hint="@string/event_name"
             android:inputType="textPersonName" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayoutNewEventDescription"
+        android:id="@+id/textInputLayoutEditEventDescription"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_below="@+id/textInputLayoutNewEventName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/textInputLayoutEditEventName"
         app:counterEnabled="true"
         app:counterMaxLength="50"
         app:errorEnabled="true">
@@ -44,29 +43,29 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
+        android:id="@+id/addMoreParticipantsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_add_participants"
-        android:id="@+id/addParticipantsButton"
-        android:layout_below="@+id/textInputLayoutNewEventDescription" />
+        android:layout_below="@+id/textInputLayoutEditEventDescription"
+        android:text="@string/add_participants" />
 
     <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group"
+        android:id="@+id/edit_chip_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/addParticipantsButton"
+        android:layout_below="@+id/addMoreParticipantsButton"
         android:visibility="visible" />
 
     <TextView
         android:id="@+id/selectCurrencyTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/chip_group"
+        android:layout_below="@+id/edit_chip_group"
         android:padding="2dp"
-        android:text="@string/textView_select_currency" />
+        android:text="@string/select_currency" />
 
     <Button
-        android:id="@+id/chooseCurrencyButton"
+        android:id="@+id/editChooseCurrencyButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/selectCurrencyTextView"
@@ -74,16 +73,15 @@
 
 
     <Button
-        android:id="@+id/buttonAdd"
+        android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_add"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="80dp"
-        tools:ignore="RtlHardcoded" />
+        android:text="@string/button_save" />
 
 
 </RelativeLayout>

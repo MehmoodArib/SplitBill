@@ -42,9 +42,6 @@ import androidx.appcompat.app.AppCompatActivity;
  * After Login Completion And Saving data to shared Preference Activity Launch Phone fragment
  * where user needs to enter's his/her phone number.
  */
-
-
-
 public class LogInActivity extends AppCompatActivity {
     int RC_SIGN_IN = 0;    //Google Request code
     GoogleSignInClient mGoogleSignInClient;  // Google sign in client
@@ -147,6 +144,7 @@ public class LogInActivity extends AppCompatActivity {
             // Signed in successfully, show authenticated UI.
             JSONObject obj = new JSONObject();
             try {
+                //TODO: do not use hardcode keys
                 obj.put("ProfileUrl", account.getPhotoUrl());
                 obj.put("email", account.getEmail());
                 obj.put("id", account.getId());

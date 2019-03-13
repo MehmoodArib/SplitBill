@@ -8,14 +8,18 @@
     tools:context=".ui.Event.DetailedEventActivity">
 
     <include layout="@layout/toolbar" />
+    <FrameLayout
+        android:id="@+id/fragmentContainer2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
     <com.google.android.material.tabs.TabLayout
         android:elevation="4dp"
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        app:tabSelectedTextColor="@android:color/white"
+        app:tabSelectedTextColor="@color/colorPrimary"
         app:tabTextColor="@android:color/black"
         app:tabMode="fixed">
 
@@ -23,13 +27,13 @@
             android:id="@+id/expensesTab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="EXPENSES" />
+            android:text="@string/tabItemExpense" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/balancesTab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Balances" />
+            android:text="@string/tabItemBalance" />
     </com.google.android.material.tabs.TabLayout>
 
 

@@ -3,8 +3,8 @@ package com.example.mehmood.splitbill.data;
 import androidx.annotation.NonNull;
 
 public class Contact {
-    String name;
-    String number;
+    private String name;
+    private String number;
     public String getName() {
         return name;
     }

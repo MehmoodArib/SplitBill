@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,7 +15,10 @@ import com.example.mehmood.splitbill.R;
 import com.example.mehmood.splitbill.data.Event;
 import com.example.mehmood.splitbill.data.EventViewModel;
 import com.example.mehmood.splitbill.data.Expense;
+import com.example.mehmood.splitbill.ui.Event.EditEventFragment;
 import com.example.mehmood.splitbill.utils.Adapters.ExpenseAdapter;
+import com.example.mehmood.splitbill.utils.Utilities.FragmentUtility;
+import com.example.mehmood.splitbill.utils.Utilities.Utility;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -53,17 +57,20 @@ public class ExpenseFragment extends Fragment {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         assert getArguments() != null;
-        eventId = getArguments().getInt("eventId");
+        eventId = getArguments().getInt(Utility.eventId);
         View view = inflater.inflate(R.layout.fragment_expenses, container, false);
+
         mAddExpenseFloatingActionButton = view.findViewById(R.id.add_new_expense_button);
         mTotalExpenseTextView = view.findViewById(R.id.event_Total_Expense);
         mTotalAmountCurrency = view.findViewById(R.id.event_Currency);
         mMyAmountCurrency = view.findViewById(R.id.event_Currency2);
+
         mExpenseListRecyclerView = view.findViewById(R.id.expense_recycler_view);
         mExpenseListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mExpenseListRecyclerView.setHasFixedSize(true);
         mExpenseAdapter = new ExpenseAdapter();
         mExpenseListRecyclerView.setAdapter(mExpenseAdapter);
+
         mEventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
         mEventViewModel.getExpenseOfEvent(eventId);
         mEventViewModel.getEvent(eventId);
@@ -81,14 +88,14 @@ public class ExpenseFragment extends Fragment {
                 mExpenseAdapter.submitList(expenses);
             }
         });
+
         itemTouchHelper();
         expenseAdapterItemClickListener();
         mFloatingActionButtonListener();
         return view;
     }
-
     private void expenseAdapterItemClickListener() {
-        mExpenseAdapter.setOnItemClickListner(new ExpenseAdapter.OnItemClickListner() {
+        mExpenseAdapter.setOnItemClickListener(new ExpenseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Expense expense) {
 
@@ -104,7 +111,7 @@ public class ExpenseFragment extends Fragment {
                 FragmentManager ft = (getActivity()).getSupportFragmentManager();
                 AddExpenseDialog fragment = new AddExpenseDialog();
                 Bundle bundle = new Bundle();
-                bundle.putInt("eventId", eventId);
+                bundle.putInt(Utility.eventId, eventId);
                 fragment.setArguments(bundle);
                 fragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyDialogFragmentStyle);
                 fragment.show(ft, null);
@@ -112,6 +119,7 @@ public class ExpenseFragment extends Fragment {
         });
     }
 
+    //
     private void itemTouchHelper() {
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, LEFT) {
             @Override
@@ -140,7 +148,14 @@ public class ExpenseFragment extends Fragment {
             Toast.makeText(getActivity(), "Clicked on" + item.getTitle(), Toast.LENGTH_SHORT).show();
             return true;
         } else if (item.getItemId() == R.id.expense_edit) {
+
+            EditEventFragment editEventFragment = new EditEventFragment();
+            Bundle data = new Bundle();
+            data.putInt(Utility.eventId, eventId);
+            FragmentUtility.inflateFragment(editEventFragment, getActivity().getSupportFragmentManager(), R.id.fragmentContainer2, true, false, data);
             Toast.makeText(getActivity(), "Clicked on" + item.getTitle(), Toast.LENGTH_SHORT).show();
+            FrameLayout fm = getActivity().findViewById(R.id.fragmentContainer2);
+            fm.setVisibility(View.VISIBLE);
             return true;
         } else if (item.getItemId() == R.id.expense_sort_by_title) {
             Toast.makeText(getActivity(), "Clicked on" + item.getTitle(), Toast.LENGTH_SHORT).show();

@@ -36,13 +36,13 @@
         android:id="@+id/verifyButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Verify" />
+        android:text="@string/verify" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/verifyButton"
-        android:text="This will help you share the data between the other participants."/>
+        android:text="@string/this_will_help_you_share_the_data_between_the_other_participants"/>
 
 
 </RelativeLayout>

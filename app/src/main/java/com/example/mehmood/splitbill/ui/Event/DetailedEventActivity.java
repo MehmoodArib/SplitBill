@@ -42,7 +42,7 @@ public class DetailedEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_event);
-        Integer eventId = getIntent().getExtras().getInt("EventId");
+        Integer eventId = getIntent().getExtras().getInt(Utility.eventId);
         EventViewModel eventViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
         eventViewModel.getEvent(eventId);
         eventViewModel.getEvent().observe(this, new Observer<Event>() {
@@ -69,13 +69,13 @@ public class DetailedEventActivity extends AppCompatActivity {
         mTabLayout.getTabAt(1).setIcon(tabIcons[1]);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), mTabLayout.getTabCount(), eventId);
         mViewPager.setAdapter(viewPagerAdapter);
-
-        //mTabLayout.setupWithViewPager(mViewPager);
+        // mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
                 mTabLayout.getTabAt(tab.getPosition()).setIcon(tabIcons2[tab.getPosition()]);
+
 
                 if (tab.getPosition() == 0) {
 
@@ -89,6 +89,7 @@ public class DetailedEventActivity extends AppCompatActivity {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 mTabLayout.getTabAt(tab.getPosition()).setIcon(tabIcons[tab.getPosition()]);
+
             }
 
             @Override

@@ -40,18 +40,22 @@ private ImageView mImageView;
         mTextViewEmail= view.findViewById(R.id.profile_email);
         mTextViewName= view.findViewById(R.id.profile_name);
         msaveUserInfoButton = view.findViewById(R.id.saveUserInfoButton);
+
         final String userName = SharedPreferencesUtility.getInstance(getContext()).getString(SharedPreferencesUtility.Key.name);
         String userEmail =SharedPreferencesUtility.getInstance(getContext()).getString(SharedPreferencesUtility.Key.email);
         String profileUrl = SharedPreferencesUtility.getInstance(getContext()).getString(SharedPreferencesUtility.Key.profileUrl);
         final String phone = SharedPreferencesUtility.getInstance(getContext()).getString(SharedPreferencesUtility.Key.phone);
+
         mTextViewName.setText(userName);
         mTextViewEmail.setText(userEmail);
         Picasso.get().load(profileUrl).resize(600, 600).transform(new CropCircleTransformation()).into(mImageView);
 
         mTextInputEditTextUserName = view.findViewById(R.id.textInputEditTextUserName);
         mTextInputEditTextUserPhone = view.findViewById(R.id.textInputEditTextUserPhone);
+
         mTextInputEditTextUserName.setText(userName);
         mTextInputEditTextUserPhone.setText(phone);
+
         mTextInputEditTextUserName.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {

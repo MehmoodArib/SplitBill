@@ -29,7 +29,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Expenses" />
+                android:text="@string/total_expenses" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -40,15 +40,15 @@
                     android:id="@+id/event_Total_Expense"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.00"
-                    android:textSize="20dp" />
+                    android:text="@string/_0_00"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/event_Currency"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="INR"
-                    android:textSize="20dp" />
+                    android:text="@string/buttonChChooseCurrencyDefaultCurrency"
+                    android:textSize="20sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -71,12 +71,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="end|right"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            tools:ignore="RtlHardcoded">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="My Total" />
+                android:text="@string/my_total" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -92,8 +93,8 @@
                     android:id="@+id/event_Currency2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="INR"
-                    android:textSize="20dp" />
+                    android:text="@string/buttonChChooseCurrencyDefaultCurrency"
+                    android:textSize="20sp" />
             </LinearLayout>
         </LinearLayout>
 

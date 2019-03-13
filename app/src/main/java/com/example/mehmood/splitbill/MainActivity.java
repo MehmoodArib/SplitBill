@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -60,8 +59,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         drawer = findViewById(R.id.draw_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -69,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
-
 
         View headerLayout = navigationView.getHeaderView(0);
         navHeaderEmailTextView = headerLayout.findViewById(R.id.nav_header_textViewEmail);
@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String name = SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.name);
         String email = SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.email);
         String phone = SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.phone);
+
         if (TextUtils.isEmpty(name)|TextUtils.isEmpty(email)|TextUtils.isEmpty(phone)) {
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(intent);
@@ -162,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
-        Log.e("etc", "etc");
     }
 
     public void rateApp() {

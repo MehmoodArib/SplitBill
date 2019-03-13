@@ -27,7 +27,7 @@ public class ExpenseAdapter extends ListAdapter<Expense, ExpenseAdapter.ExpenseH
                     && oldItem.getExpenseName().equals(newItem.getExpenseName());
         }
     };
-    private OnItemClickListner listener;
+    private OnItemClickListener listener;
 
     public ExpenseAdapter() {
         super(Diff_CALLBACK);
@@ -54,11 +54,11 @@ public class ExpenseAdapter extends ListAdapter<Expense, ExpenseAdapter.ExpenseH
         return getItem(position);
     }
 
-    public void setOnItemClickListner(OnItemClickListner listner) {
-        this.listener = listner;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
-    public interface OnItemClickListner {
+    public interface OnItemClickListener {
         void onItemClick(Expense expense);
     }
 

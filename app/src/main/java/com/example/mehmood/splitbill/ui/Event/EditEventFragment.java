@@ -1,5 +1,6 @@
 package com.example.mehmood.splitbill.ui.Event;
 
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.example.mehmood.splitbill.data.EventViewModel;
 import com.example.mehmood.splitbill.utils.Utilities.Utility;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.wafflecopter.multicontactpicker.ContactResult;
 import com.wafflecopter.multicontactpicker.LimitColumn;
@@ -30,18 +32,11 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-/**
- * Fragment Launched by ChooseAddOptionDialog
- * Used to create a new event
- * New Event should have Name optional Description participants added from contacts
- * currency etc.
- */
-
-public class AddEventFragment extends Fragment implements MainActivity.ContactInfo, View.OnClickListener {
+public class EditEventFragment extends androidx.fragment.app.Fragment implements MainActivity.ContactInfo, View.OnClickListener {
 
     private static final int CONTACT_PICKER_REQUEST = 0;
     private static final String[] CURRENCIES = {"Rs", "$", "Eu"};
@@ -49,7 +44,7 @@ public class AddEventFragment extends Fragment implements MainActivity.ContactIn
 
     private TextInputLayout mEventNameTextInputLayout;
     private TextInputLayout mEventDescTextInputLayout;
-    private Button mAddEventButton;
+    private Button mSaveEventButton;
     private Button mChooseCurrencyButton;
     private String mEventCurrency;
     private String mEventName;
@@ -59,23 +54,58 @@ public class AddEventFragment extends Fragment implements MainActivity.ContactIn
     private EventViewModel mEventViewModel;
     private Button mContactPickerButton;
     private ChipGroup mChipGroup;
+    private Integer eventId;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_event, container, false);
-
-        //Set Id's of the view
-        setFindById(view);
+        assert getArguments() != null;
+        eventId = getArguments().getInt(Utility.eventId);
+        View view = inflater.inflate(R.layout.fragment_edit_event, container, false);
+        mEventDescTextInputLayout = view.findViewById(R.id.textInputLayoutEditEventDescription);
+        mEventNameTextInputLayout = view.findViewById(R.id.textInputLayoutEditEventName);
+        mSaveEventButton = view.findViewById(R.id.buttonSave);
+        mContactPickerButton = view.findViewById(R.id.addMoreParticipantsButton);
+        mChooseCurrencyButton = view.findViewById(R.id.editChooseCurrencyButton);
+        mChipGroup = view.findViewById(R.id.edit_chip_group);
 
         //ViewModel with owner MainActivity
         mEventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
-        mEvent.setCurrency(Utility.defaultCurrency);//Default Currency
+        mEventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
+        mEventViewModel.getExpenseOfEvent(eventId);
+        mEventViewModel.getEvent(eventId);
+        mEventViewModel.getEvent().observe(this, new Observer<Event>() {
+            @Override
+            public void onChanged(Event event) {
+                mEventDescTextInputLayout.getEditText().setText(event.getEventDesc());
+                mEventNameTextInputLayout.getEditText().setText(event.getEventName());
+                mChooseCurrencyButton.setText(event.getCurrency());
+                participants = event.getParticipantsList();
+                mSetContactsInChipGroup(participants);
+
+            }
+        });
         mContactPickerButtonListener();
-        mAddEventButtonListener(getActivity());
+        mSaveEventButtonListener(getActivity());
         currencyPicker();
         mChooseCurrencyButtonListener();
         return view;
+    }
+
+    private void mSetContactsInChipGroup(ArrayList<Contact> participants) {
+        int i = 0;
+        while (i < participants.size()) {
+            Chip chip = new Chip(getActivity());
+            chip.setText(participants.get(i).getName());
+            chip.setCloseIconVisible(true);
+            chip.setCheckable(false);
+            chip.setClickable(false);
+            chip.setOnCloseIconClickListener(this);
+            mChipGroup.addView(chip);
+            mChipGroup.setVisibility(View.VISIBLE);
+            i++;
+
+        }
     }
 
     private void mChooseCurrencyButtonListener() {
@@ -87,17 +117,16 @@ public class AddEventFragment extends Fragment implements MainActivity.ContactIn
         });
     }
 
-    private void mAddEventButtonListener(final FragmentActivity iActivity) {
-        mAddEventButton.setOnClickListener(new View.OnClickListener() {
+    private void mSaveEventButtonListener(final FragmentActivity iActivity) {
+        mSaveEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!validateEventName()) return;
                 if (!validateEventDesc()) return;
                 setEvent();
-                mEventViewModel.addEvent(mEvent); //Finally Adding Event to the dataBase
-
+                mEventViewModel.updateEvent(mEvent); //Finally Updating Event to the dataBase
                 //pop-ing up this fragment to go back to EventList Fragment.
-                Fragment fragment = iActivity.getSupportFragmentManager().findFragmentByTag(AddEventFragment.class.getSimpleName());
+                androidx.fragment.app.Fragment fragment = iActivity.getSupportFragmentManager().findFragmentByTag(AddEventFragment.class.getSimpleName());
                 if (fragment != null)
                     iActivity.getSupportFragmentManager().popBackStack();
 
@@ -130,32 +159,33 @@ public class AddEventFragment extends Fragment implements MainActivity.ContactIn
         });
 
     }
+
     private boolean validateEventName() {
         mEventName = mEventNameTextInputLayout.getEditText().getText().toString().trim();
         if (mEventName.isEmpty()) {
-            mEventNameTextInputLayout.setError(Utility.errorNameValidation);
+            mEventNameTextInputLayout.setError("Field Can't be empty");
             return false;
         }
         if (mEventName.length() > 20) {
-            mEventDescTextInputLayout.setError(Utility.errorNameValidation2);
-                return false;
-            } else {
+            mEventDescTextInputLayout.setError("Maximum 20 characters Allowed");
+            return false;
+        } else {
             mEventNameTextInputLayout.setError(null);
-                return true;
-            }
+            return true;
         }
+    }
 
     private boolean validateEventDesc() {
         mEventDesc = mEventDescTextInputLayout.getEditText().getText().toString().trim();
-
+        //TODO: do not use hardcode values for any rules
         if (mEventDesc.length() > 50) {
-            mEventDescTextInputLayout.setError(Utility.errorDescValidation);
-                return false;
-            } else {
+            mEventDescTextInputLayout.setError("Maximum 50 characters Allowed");
+            return false;
+        } else {
             mEventDescTextInputLayout.setError(null);
-                return true;
-            }
+            return true;
         }
+    }
 
     private void setEvent() {
         mEvent.setEventName(mEventName);
@@ -199,14 +229,7 @@ public class AddEventFragment extends Fragment implements MainActivity.ContactIn
             }
             i++;
         }
-    }
-    private void setFindById(View view) {
-        mEventDescTextInputLayout = view.findViewById(R.id.textInputLayoutNewEventDescription);
-        mEventNameTextInputLayout = view.findViewById(R.id.textInputLayoutNewEventName);
-        mAddEventButton = view.findViewById(R.id.buttonAdd);
-        mContactPickerButton = view.findViewById(R.id.addParticipantsButton);
-        mChooseCurrencyButton = view.findViewById(R.id.chooseCurrencyButton);
-        mChipGroup = view.findViewById(R.id.chip_group);
+
     }
 
     private void currencyPicker() {
@@ -237,6 +260,7 @@ public class AddEventFragment extends Fragment implements MainActivity.ContactIn
         for (int i = 0; i < participants.size(); i++) {
             if (Objects.equals(name, participants.get(i).getName())) {
                 participants.remove(i);
+                break;
             }
         }
     }

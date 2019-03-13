@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.example.mehmood.splitbill.ui.Balance.BalancesFragment;
 import com.example.mehmood.splitbill.ui.Expense.ExpenseFragment;
+import com.example.mehmood.splitbill.utils.Utilities.Utility;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -13,10 +14,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 public class ViewPagerAdapter extends FragmentPagerAdapter {
     private int numOfTabs;
     private Integer eventId;
+
     private ViewPagerAdapter(@NonNull FragmentManager fm, int numOfTabs) {
         super(fm);
         this.numOfTabs = numOfTabs;
     }
+
     public ViewPagerAdapter(FragmentManager fm, int numOfTabs, Integer eventId)
     {
         this(fm,numOfTabs);
@@ -30,7 +33,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 Fragment frg=new ExpenseFragment();
                 Bundle data=new Bundle();
-                data.putInt("eventId",eventId);
+                data.putInt(Utility.eventId,eventId);
                 frg.setArguments(data);
                 return frg;
             case 1:
