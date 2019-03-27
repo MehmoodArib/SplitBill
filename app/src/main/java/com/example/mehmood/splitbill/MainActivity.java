@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView navHeaderNameTextView;
     private TextView navHeaderEmailTextView;
     private ImageView navHeaderPicture;
+    NavigationView navigationView;
+
     public static final int CONTACT_PICKER_REQUEST = 0; //Contact picker Request Code.
 
     @Override
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.draw_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -75,11 +78,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navHeaderEmailTextView = headerLayout.findViewById(R.id.nav_header_textViewEmail);
         navHeaderNameTextView = headerLayout.findViewById(R.id.nav_header_textViewName);
         navHeaderPicture = headerLayout.findViewById(R.id.nav_header_imageButton);
-
         String name = SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.name);
         String email = SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.email);
         String phone = SharedPreferencesUtility.getInstance(this).getString(SharedPreferencesUtility.Key.phone);
-
         if (TextUtils.isEmpty(name)|TextUtils.isEmpty(email)|TextUtils.isEmpty(phone)) {
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(intent);
@@ -88,12 +89,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             handleIntent(getIntent());
             EventListFragment eventListFragment = new EventListFragment();
-            FragmentUtility.inflateFragment(eventListFragment, getSupportFragmentManager(), R.id.fragmentContainer, false, true, null);
+            FragmentUtility.inflateFragment(eventListFragment, getSupportFragmentManager(), R.id.fragmentContainer, false, false, null);
             navigationView.setCheckedItem(R.id.home);
         }
         setNavHeader();//fill the NavHeader Values names,email&photo
-    }
 
+    }
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (menuItem.getItemId()) {
             case R.id.profile:
                 ProfileFragment profileFragment = new ProfileFragment();
-                FragmentUtility.inflateFragment(profileFragment, getSupportFragmentManager(), R.id.fragmentContainer, true, false, null);
+                FragmentUtility.inflateFragment(profileFragment, getSupportFragmentManager(), R.id.fragmentContainer, true, true, null);
                 break;
             case R.id.home:
                 EventListFragment eventListFragment = new EventListFragment();
@@ -160,7 +161,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else {
             super.onBackPressed();
         }
     }
@@ -199,9 +201,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 List<ContactResult> results = MultiContactPicker.obtainResult(data);
                 AddEventFragment addEventFragment = (AddEventFragment) getSupportFragmentManager().findFragmentByTag(AddEventFragment.class.getSimpleName());
                 addEventFragment.setContacts(results);
-
             } else if (resultCode == RESULT_CANCELED) {
-                System.out.println("User closed the picker without selecting items.");
+                Log.e("xyz", "User closed the picker without selecting items.");
             }
         }
     }

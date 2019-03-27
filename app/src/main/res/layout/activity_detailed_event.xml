@@ -1,44 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ui.Event.DetailedEventActivity">
-
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/toolbar"/>
     <FrameLayout
         android:id="@+id/fragmentContainer2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
-
-    <com.google.android.material.tabs.TabLayout
-        android:elevation="4dp"
-        android:id="@+id/tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabSelectedTextColor="@color/colorPrimary"
-        app:tabTextColor="@android:color/black"
-        app:tabMode="fixed">
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/expensesTab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tabItemExpense" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/balancesTab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tabItemBalance" />
-    </com.google.android.material.tabs.TabLayout>
-
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 </LinearLayout>

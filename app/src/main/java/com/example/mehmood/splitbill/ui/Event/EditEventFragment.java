@@ -1,8 +1,10 @@
 package com.example.mehmood.splitbill.ui.Event;
 
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.MyOptionsPickerView;
-import com.example.mehmood.splitbill.MainActivity;
 import com.example.mehmood.splitbill.R;
 import com.example.mehmood.splitbill.data.Contact;
 import com.example.mehmood.splitbill.data.Event;
@@ -18,7 +19,6 @@ import com.example.mehmood.splitbill.data.EventViewModel;
 import com.example.mehmood.splitbill.utils.Utilities.Utility;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.wafflecopter.multicontactpicker.ContactResult;
 import com.wafflecopter.multicontactpicker.LimitColumn;
@@ -36,7 +36,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-public class EditEventFragment extends androidx.fragment.app.Fragment implements MainActivity.ContactInfo, View.OnClickListener {
+public class EditEventFragment extends androidx.fragment.app.Fragment implements DetailedEventActivity.ContactInfo, View.OnClickListener {
 
     private static final int CONTACT_PICKER_REQUEST = 0;
     private static final String[] CURRENCIES = {"Rs", "$", "Eu"};
@@ -55,26 +55,23 @@ public class EditEventFragment extends androidx.fragment.app.Fragment implements
     private Button mContactPickerButton;
     private ChipGroup mChipGroup;
     private Integer eventId;
-
+    private Activity iActivity;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         assert getArguments() != null;
         eventId = getArguments().getInt(Utility.eventId);
         View view = inflater.inflate(R.layout.fragment_edit_event, container, false);
+        iActivity = getActivity();
         mEventDescTextInputLayout = view.findViewById(R.id.textInputLayoutEditEventDescription);
         mEventNameTextInputLayout = view.findViewById(R.id.textInputLayoutEditEventName);
         mSaveEventButton = view.findViewById(R.id.buttonSave);
         mContactPickerButton = view.findViewById(R.id.addMoreParticipantsButton);
         mChooseCurrencyButton = view.findViewById(R.id.editChooseCurrencyButton);
         mChipGroup = view.findViewById(R.id.edit_chip_group);
+        mEventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
 
-        //ViewModel with owner MainActivity
-        mEventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
-        mEventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
-        mEventViewModel.getExpenseOfEvent(eventId);
-        mEventViewModel.getEvent(eventId);
-        mEventViewModel.getEvent().observe(this, new Observer<Event>() {
+        mEventViewModel.getEvent().observe(getActivity(), new Observer<Event>() {
             @Override
             public void onChanged(Event event) {
                 mEventDescTextInputLayout.getEditText().setText(event.getEventDesc());
@@ -95,7 +92,7 @@ public class EditEventFragment extends androidx.fragment.app.Fragment implements
     private void mSetContactsInChipGroup(ArrayList<Contact> participants) {
         int i = 0;
         while (i < participants.size()) {
-            Chip chip = new Chip(getActivity());
+            Chip chip = new Chip(iActivity);
             chip.setText(participants.get(i).getName());
             chip.setCloseIconVisible(true);
             chip.setCheckable(false);
@@ -126,7 +123,8 @@ public class EditEventFragment extends androidx.fragment.app.Fragment implements
                 setEvent();
                 mEventViewModel.updateEvent(mEvent); //Finally Updating Event to the dataBase
                 //pop-ing up this fragment to go back to EventList Fragment.
-                androidx.fragment.app.Fragment fragment = iActivity.getSupportFragmentManager().findFragmentByTag(AddEventFragment.class.getSimpleName());
+                mEventViewModel.getEvent(eventId);
+                androidx.fragment.app.Fragment fragment = iActivity.getSupportFragmentManager().findFragmentByTag(EditEventFragment.class.getSimpleName());
                 if (fragment != null)
                     iActivity.getSupportFragmentManager().popBackStack();
 
@@ -193,11 +191,11 @@ public class EditEventFragment extends androidx.fragment.app.Fragment implements
         mEvent.setCurrency(mEventCurrency);
         mEvent.setParticipantsList(participants);
         mEvent.setTotalAmount(0.0);
+        mEvent.setEventId(eventId);
     }
 
     @Override
     public void setContacts(List<ContactResult> contacts) {
-
         int i = 0;
         while (i < contacts.size()) {
             boolean flag = true;

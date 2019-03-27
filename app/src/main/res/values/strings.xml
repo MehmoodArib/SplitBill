@@ -22,12 +22,12 @@
     <string name="description">DESCRIPTION</string>
     <string name="currency">CURRENCY</string>
     <string name="tabItemExpense">EXPENSES</string>
-    <string name="tabItemBalance">Balances</string>
-    <string name="inputTextHintExpenseName">Expense Name</string>
-    <string name="inputTextHintExpenseAmount">Expense Amount</string>
-    <string name="paid_by">Paid by:-</string>
-    <string name="paid_for">Paid for:-</string>
-    <string name="button_add_expense">Add Expense</string>
+    <string name="tabItemBalance">BALANCES</string>
+    <string name="inputTextHintExpenseName">EXPENSE NAME</string>
+    <string name="inputTextHintExpenseAmount">EXPENSE AMOUNT</string>
+    <string name="paid_by">PAID BY:-</string>
+    <string name="paid_for">PAID FOR:-</string>
+    <string name="button_add_expense">ADD EXPENSE</string>
     <string name="inputTextHintEventDescription">EVENT DESCRIPTION</string>
     <string name="button_add_participants">ADD PARTICIPANTS</string>
     <string name="textView_select_currency">SELECT CURRENCY</string>
@@ -35,16 +35,15 @@
     <string name="button_add">ADD</string>
     <string name="add_participants">ADD PARTICIPANTS</string>
     <string name="select_currency">SELECT CURRENCY</string>
-    <string name="button_save">Save</string>
-    <string name="total_expenses">Total Expenses</string>
+    <string name="button_save">SAVE</string>
+    <string name="total_expenses">TOTAL EXPENSES</string>
     <string name="_0_00">0.00</string>
-    <string name="my_total">My Total</string>
+    <string name="my_total">MY TOTAL</string>
     <string name="event_id">EVENT ID</string>
     <string name="button_join">JOIN</string>
-    <string name="verify">Verify</string>
+    <string name="verify">VERIFY</string>
     <string name="this_will_help_you_share_the_data_between_the_other_participants">This will help you share the data between the other participants.</string>
-    <string name="InputTextHintPhone">Phone</string>
+    <string name="InputTextHintPhone">PHONE</string>
     <string name="inputTextHintEventName">EVENT NAME</string>
-
 
 </resources>

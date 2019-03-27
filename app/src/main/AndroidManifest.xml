@@ -62,6 +62,7 @@
         <activity android:name=".ui.LogIn.LogInActivity" />
         <activity
             android:name=".ui.Event.DetailedEventActivity"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme2"/>
     </application>
 

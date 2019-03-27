@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/colorAccent"
+        android:baselineAligned="false"
         android:orientation="horizontal"
         android:padding="6dp"
         android:weightSum="5">

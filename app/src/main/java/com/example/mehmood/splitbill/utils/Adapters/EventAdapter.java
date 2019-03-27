@@ -60,19 +60,16 @@ public class EventAdapter extends ListAdapter<Event, EventAdapter.EventHolder> {
 
     public interface OnItemClickListener {
         void onItemClick(Event event);
-        void onEditClick(Event event);
     }
 
     class EventHolder extends RecyclerView.ViewHolder {
         private TextView textViewTitle;
         private TextView textViewDesc;
-        private ImageButton mEditEventImageButton;
 
         private EventHolder(@NonNull View itemView) {
             super(itemView);
             textViewDesc = itemView.findViewById(R.id.event_desc);
             textViewTitle = itemView.findViewById(R.id.event_name);
-            mEditEventImageButton = itemView.findViewById(R.id.editEventImageButton);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -80,18 +77,6 @@ public class EventAdapter extends ListAdapter<Event, EventAdapter.EventHolder> {
                     if (listener != null && position != RecyclerView.NO_POSITION) {
                         listener.onItemClick(getItem(position));
                     }
-                }
-            });
-            mEditEventImageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.onEditClick(getItem(position));
-                        }
-                    }
-
                 }
             });
         }

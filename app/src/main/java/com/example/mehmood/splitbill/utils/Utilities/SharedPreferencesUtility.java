@@ -24,7 +24,6 @@ import android.content.SharedPreferences;
      * simple use SharedPreferencesUtility.getInstance() to save some precious line space.
      */
     public class SharedPreferencesUtility {
-        // TODO: CHANGE THIS TO SOMETHING MEANINGFUL
         private static final String USER_DATA = "USER DATA";
         private static SharedPreferencesUtility sSharedPrefs;
         private SharedPreferences mPref;

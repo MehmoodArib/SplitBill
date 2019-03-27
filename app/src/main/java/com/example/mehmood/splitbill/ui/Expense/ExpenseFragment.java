@@ -1,13 +1,13 @@
 package com.example.mehmood.splitbill.ui.Expense;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -56,6 +54,7 @@ public class ExpenseFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        Log.d("EF","OnCreate");
         assert getArguments() != null;
         eventId = getArguments().getInt(Utility.eventId);
         View view = inflater.inflate(R.layout.fragment_expenses, container, false);
@@ -108,13 +107,13 @@ public class ExpenseFragment extends Fragment {
         mAddExpenseFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager ft = (getActivity()).getSupportFragmentManager();
-                AddExpenseDialog fragment = new AddExpenseDialog();
+
                 Bundle bundle = new Bundle();
                 bundle.putInt(Utility.eventId, eventId);
-                fragment.setArguments(bundle);
-                fragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyDialogFragmentStyle);
-                fragment.show(ft, null);
+
+                AddExpenseFragment addExpenseFragment = new AddExpenseFragment();
+                FragmentUtility.inflateFragment(addExpenseFragment, getActivity().getSupportFragmentManager(), R.id.fragmentContainer2, true, true, bundle);
+
             }
         });
     }
@@ -147,30 +146,51 @@ public class ExpenseFragment extends Fragment {
         if (item.getItemId() == R.id.expense_share) {
             Toast.makeText(getActivity(), "Clicked on" + item.getTitle(), Toast.LENGTH_SHORT).show();
             return true;
-        } else if (item.getItemId() == R.id.expense_edit) {
 
+        } else if (item.getItemId() == R.id.expense_edit) {
             EditEventFragment editEventFragment = new EditEventFragment();
             Bundle data = new Bundle();
             data.putInt(Utility.eventId, eventId);
-            FragmentUtility.inflateFragment(editEventFragment, getActivity().getSupportFragmentManager(), R.id.fragmentContainer2, true, false, data);
-            Toast.makeText(getActivity(), "Clicked on" + item.getTitle(), Toast.LENGTH_SHORT).show();
-            FrameLayout fm = getActivity().findViewById(R.id.fragmentContainer2);
-            fm.setVisibility(View.VISIBLE);
+            FragmentUtility.inflateFragment(editEventFragment, getActivity().getSupportFragmentManager(),
+                    R.id.fragmentContainer2, true, false, data);
             return true;
+
         } else if (item.getItemId() == R.id.expense_sort_by_title) {
             Toast.makeText(getActivity(), "Clicked on" + item.getTitle(), Toast.LENGTH_SHORT).show();
             return true;
+
         } else if (item.getItemId() == R.id.expense_sort_by_amount) {
             Toast.makeText(getActivity(), "Clicked on" + item.getTitle(), Toast.LENGTH_SHORT).show();
             return true;
+
         } else if (item.getItemId() == R.id.expense_sort_by_date) {
             Toast.makeText(getActivity(), "Clicked on" + item.getTitle(), Toast.LENGTH_SHORT).show();
             return true;
+
         } else if (item.getItemId() == R.id.expense_sort_by_payer) {
             Toast.makeText(getActivity(), "Clicked on" + item.getTitle(), Toast.LENGTH_SHORT).show();
             return true;
+
         } else
             return false;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("EF","On Resume");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("EF","On Stop");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("EF","On DestroyView");
+    }
 }

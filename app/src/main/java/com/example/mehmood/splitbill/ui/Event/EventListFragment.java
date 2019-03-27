@@ -103,14 +103,6 @@ public class EventListFragment extends Fragment {
                 intent.putExtra(Utility.eventId, event.getEventId());
                 startActivity(intent);
             }
-
-            @Override
-            public void onEditClick(Event event) {
-                EditEventFragment editEventFragment = new EditEventFragment();
-                Bundle data = new Bundle();
-                data.putInt(Utility.eventId, event.getEventId());
-                FragmentUtility.inflateFragment(editEventFragment, getActivity().getSupportFragmentManager(), R.id.fragmentContainer, true, false, data);
-            }
         });
     }
 

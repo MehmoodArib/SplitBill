@@ -18,6 +18,7 @@ import com.example.mehmood.splitbill.utils.Utilities.SharedPreferencesUtility;
 import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.Picasso;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
@@ -36,6 +37,7 @@ private ImageView mImageView;
 
         final View view = inflater.inflate(R.layout.fragment_profile, container, false);
         setHasOptionsMenu(false);
+        setMenuVisibility(false);
         mImageView = view.findViewById(R.id.profile_image);
         mTextViewEmail= view.findViewById(R.id.profile_email);
         mTextViewName= view.findViewById(R.id.profile_name);

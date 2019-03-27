@@ -59,7 +59,7 @@ public abstract class MyDataBase extends RoomDatabase {
             myDao.addEvent(event3);
             myDao.addEvent(event4);
             myDao.addEvent(event5);
-            return null;
+            throw new RuntimeException("Invalid data");
         }
     }
 }

@@ -95,7 +95,6 @@ public class AddEventFragment extends Fragment implements MainActivity.ContactIn
                 if (!validateEventDesc()) return;
                 setEvent();
                 mEventViewModel.addEvent(mEvent); //Finally Adding Event to the dataBase
-
                 //pop-ing up this fragment to go back to EventList Fragment.
                 Fragment fragment = iActivity.getSupportFragmentManager().findFragmentByTag(AddEventFragment.class.getSimpleName());
                 if (fragment != null)
