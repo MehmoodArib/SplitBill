@@ -13,8 +13,8 @@
         android:layout_alignParentEnd="false"
         android:text="participant"/>
 
-    <com.google.android.material.checkbox.MaterialCheckBox
-        android:id="@+id/checkBox1"
+    <Switch
+        android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"/>
