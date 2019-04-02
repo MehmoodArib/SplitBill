@@ -2,13 +2,13 @@ package com.example.mehmood.splitbill.ui.Event;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mehmood.splitbill.R;
+import com.example.mehmood.splitbill.data.DetailedActivityViewModel;
 import com.example.mehmood.splitbill.data.Event;
-import com.example.mehmood.splitbill.data.EventViewModel;
+import com.example.mehmood.splitbill.data.MyViewModelFactory;
 import com.example.mehmood.splitbill.utils.Utilities.FragmentUtility;
 import com.example.mehmood.splitbill.utils.Utilities.Utility;
 import com.wafflecopter.multicontactpicker.ContactResult;
@@ -34,12 +34,10 @@ public class DetailedEventActivity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         mTitle = mToolbar.findViewById(R.id.toolbar_title);
         mSubTitle = mToolbar.findViewById(R.id.toolbar_sub_title);
-        EventViewModel eventViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
-        eventViewModel.getEvent(eventId);
-        eventViewModel.getEvent().observe(this, new Observer<Event>() {
+        DetailedActivityViewModel detailedActivityViewModel = ViewModelProviders.of(this, new MyViewModelFactory(this.getApplication(), eventId)).get(DetailedActivityViewModel.class);
+        detailedActivityViewModel.getEvent().observe(this, new Observer<Event>() {
             @Override
             public void onChanged(Event event) {
-//                getActivity().setTitle(event.getEventName());
                 mTitle.setText(event.getEventName());
                 mSubTitle.setText(Utility.getNameList(event.getParticipantsList()));
             }
@@ -79,6 +77,5 @@ public class DetailedEventActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Log.d("DEA","On Back Pressed");
     }
 }

@@ -148,7 +148,7 @@ public class LogInActivity extends AppCompatActivity {
                 obj.put("ProfileUrl", account.getPhotoUrl());
                 obj.put("email", account.getEmail());
                 obj.put("id", account.getId());
-                obj.put("first_name", account.getDisplayName());
+                obj.put("first_name",account.getDisplayName());
             } catch (JSONException e) {
                 e.printStackTrace();
             }

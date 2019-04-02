@@ -3,6 +3,7 @@ package com.example.mehmood.splitbill.data;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -27,7 +28,7 @@ public interface MyDao {
     LiveData<List<Event>> getEvents();
 
     @Query("select * from Event where eventId = :eventID")
-    Event getEvent(Integer eventID);
+    LiveData<Event> getEvent(Integer eventID);
 
     @Insert
     void addExpense(Expense expense);
@@ -38,13 +39,14 @@ public interface MyDao {
     @Delete
     void deleteExpense(Expense expense);
 
-    @Query("select * from Expense")
-    LiveData<List<Expense>> getExpenses();
+    @Query("select * from Expense where expenseId = :expenseId")
+    LiveData<Expense> getExpense(Integer expenseId);
 
     @Query("Delete From Expense")
     void deleteAllExpense();
 
     @Query("select * from Expense where expenseEventId = :eventId")
-    List<Expense> getExpenseOfEvent(Integer eventId);
+    LiveData<List<Expense>> getExpenseOfEvent(Integer eventId);
+
 
 }

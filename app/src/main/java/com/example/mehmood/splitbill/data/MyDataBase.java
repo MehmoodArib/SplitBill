@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -46,7 +47,7 @@ public abstract class MyDataBase extends RoomDatabase {
         protected Void doInBackground(Void... voids) {
             Contact contact1 = new Contact("Arib", "991169753");
             Contact contact2 = new Contact("Amir", "991169753");
-            ArrayList<Contact> participants = new ArrayList<>();
+            HashSet<Contact> participants = new HashSet<>();
             participants.add(contact1);
             participants.add(contact2);
             Event event1 = new Event("Shimla Trip", "Official", "INR", 0.0, participants);
@@ -59,7 +60,7 @@ public abstract class MyDataBase extends RoomDatabase {
             myDao.addEvent(event3);
             myDao.addEvent(event4);
             myDao.addEvent(event5);
-            throw new RuntimeException("Invalid data");
+           return null;
         }
     }
 }

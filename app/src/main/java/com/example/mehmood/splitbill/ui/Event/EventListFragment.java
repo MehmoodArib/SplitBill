@@ -27,10 +27,13 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static android.widget.GridLayout.HORIZONTAL;
+import static android.widget.GridLayout.VERTICAL;
 import static androidx.recyclerview.widget.ItemTouchHelper.LEFT;
 /**Fragment Launched by MainActivity.
  * This Fragment List All the Events User is participant in.
@@ -56,7 +59,7 @@ public class EventListFragment extends Fragment {
         mEventListRecyclerView.setHasFixedSize(true);
         mEventListRecyclerView.setAdapter(mEventAdapter);
 
-        mEventViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
+        mEventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
         mEventViewModel.getAllEvents().observe(myActivity, new Observer<List<Event>>() {
             @Override
             public void onChanged(List<Event> events) {
@@ -64,6 +67,8 @@ public class EventListFragment extends Fragment {
             }
         });
         itemTouchHelper();
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mEventListRecyclerView.getContext(),VERTICAL);
+        mEventListRecyclerView.addItemDecoration(dividerItemDecoration);
         return view;
     }
 

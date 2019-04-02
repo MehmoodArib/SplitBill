@@ -1,7 +1,6 @@
 package com.example.mehmood.splitbill.ui.Expense;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,9 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mehmood.splitbill.R;
+import com.example.mehmood.splitbill.data.DetailedActivityViewModel;
 import com.example.mehmood.splitbill.data.Event;
 import com.example.mehmood.splitbill.data.EventViewModel;
 import com.example.mehmood.splitbill.data.Expense;
+import com.example.mehmood.splitbill.ui.Event.DetailedEventActivity;
 import com.example.mehmood.splitbill.ui.Event.EditEventFragment;
 import com.example.mehmood.splitbill.utils.Adapters.ExpenseAdapter;
 import com.example.mehmood.splitbill.utils.Utilities.FragmentUtility;
@@ -45,7 +46,7 @@ public class ExpenseFragment extends Fragment {
     private RecyclerView mExpenseListRecyclerView; //RecyclerView to show List of Expenses.
     private TextView mTotalExpenseTextView;         //Bottom Left TextView TO show Total Expense.
     private FloatingActionButton mAddExpenseFloatingActionButton; //Button to Add new Expense.
-    private EventViewModel mEventViewModel;
+    private DetailedActivityViewModel detailedActivityViewModel;
     private ExpenseAdapter mExpenseAdapter;
     private TextView mTotalAmountCurrency;
     private TextView mMyAmountCurrency;
@@ -54,7 +55,6 @@ public class ExpenseFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        Log.d("EF","OnCreate");
         assert getArguments() != null;
         eventId = getArguments().getInt(Utility.eventId);
         View view = inflater.inflate(R.layout.fragment_expenses, container, false);
@@ -70,10 +70,8 @@ public class ExpenseFragment extends Fragment {
         mExpenseAdapter = new ExpenseAdapter();
         mExpenseListRecyclerView.setAdapter(mExpenseAdapter);
 
-        mEventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
-        mEventViewModel.getExpenseOfEvent(eventId);
-        mEventViewModel.getEvent(eventId);
-        mEventViewModel.getEvent().observe(this, new Observer<Event>() {
+        detailedActivityViewModel = ViewModelProviders.of(getActivity()).get(DetailedActivityViewModel.class);
+        detailedActivityViewModel.getEvent().observe(this, new Observer<Event>() {
             @Override
             public void onChanged(Event event) {
                 mTotalExpenseTextView.setText(String.valueOf(event.getTotalAmount()));
@@ -81,10 +79,11 @@ public class ExpenseFragment extends Fragment {
                 mTotalAmountCurrency.setText(event.getCurrency());
             }
         });
-        mEventViewModel.getExpenseListOfEvent().observe(this, new Observer<List<Expense>>() {
+        detailedActivityViewModel.getExpenseListOfEvent().observe(this, new Observer<List<Expense>>() {
             @Override
             public void onChanged(List<Expense> expenses) {
-                mExpenseAdapter.submitList(expenses);
+                if(expenses!=null && expenses.size() > 0)
+                    mExpenseAdapter.submitList(expenses);
             }
         });
 
@@ -97,8 +96,11 @@ public class ExpenseFragment extends Fragment {
         mExpenseAdapter.setOnItemClickListener(new ExpenseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Expense expense) {
-
-
+                EditExpenseFragment editExpenseFragment = new EditExpenseFragment();
+                Bundle data = new Bundle();
+                data.putParcelable(Utility.expense, expense);
+                FragmentUtility.inflateFragment(editExpenseFragment, getActivity().getSupportFragmentManager(),
+                        R.id.fragmentContainer2, true, true, data);
             }
         });
     }
@@ -130,8 +132,7 @@ public class ExpenseFragment extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
                 mExpenseAdapter.getExpenseAt(viewHolder.getAdapterPosition());
-                mEventViewModel.deleteExpense(mExpenseAdapter.getExpenseAt(viewHolder.getAdapterPosition()));
-                mEventViewModel.getExpenseOfEvent(eventId);
+                detailedActivityViewModel.deleteExpense(mExpenseAdapter.getExpenseAt(viewHolder.getAdapterPosition()));
             }
         }).attachToRecyclerView(mExpenseListRecyclerView);
     }
@@ -149,10 +150,8 @@ public class ExpenseFragment extends Fragment {
 
         } else if (item.getItemId() == R.id.expense_edit) {
             EditEventFragment editEventFragment = new EditEventFragment();
-            Bundle data = new Bundle();
-            data.putInt(Utility.eventId, eventId);
             FragmentUtility.inflateFragment(editEventFragment, getActivity().getSupportFragmentManager(),
-                    R.id.fragmentContainer2, true, false, data);
+                    R.id.fragmentContainer2, true, true, null);
             return true;
 
         } else if (item.getItemId() == R.id.expense_sort_by_title) {
@@ -173,24 +172,5 @@ public class ExpenseFragment extends Fragment {
 
         } else
             return false;
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("EF","On Resume");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d("EF","On Stop");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.d("EF","On DestroyView");
     }
 }

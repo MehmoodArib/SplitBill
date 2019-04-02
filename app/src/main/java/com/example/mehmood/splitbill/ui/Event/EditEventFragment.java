@@ -4,7 +4,6 @@ package com.example.mehmood.splitbill.ui.Event;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,10 @@ import android.widget.Toast;
 import com.bigkoo.pickerview.MyOptionsPickerView;
 import com.example.mehmood.splitbill.R;
 import com.example.mehmood.splitbill.data.Contact;
+import com.example.mehmood.splitbill.data.DetailedActivityViewModel;
 import com.example.mehmood.splitbill.data.Event;
-import com.example.mehmood.splitbill.data.EventViewModel;
-import com.example.mehmood.splitbill.utils.Utilities.Utility;
+import com.example.mehmood.splitbill.ui.EditParticipantFragment;
+import com.example.mehmood.splitbill.utils.Utilities.FragmentUtility;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputLayout;
@@ -27,6 +27,7 @@ import com.wafflecopter.multicontactpicker.RxContacts.PhoneNumber;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +37,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-public class EditEventFragment extends androidx.fragment.app.Fragment implements DetailedEventActivity.ContactInfo, View.OnClickListener {
+public class EditEventFragment extends androidx.fragment.app.Fragment implements DetailedEventActivity.ContactInfo, EditParticipantFragment.UpdateContact {
 
     private static final int CONTACT_PICKER_REQUEST = 0;
     private static final String[] CURRENCIES = {"Rs", "$", "Eu"};
@@ -50,17 +51,17 @@ public class EditEventFragment extends androidx.fragment.app.Fragment implements
     private String mEventName;
     private String mEventDesc;
     private Event mEvent = new Event();
-    private ArrayList<Contact> participants = new ArrayList<>();
-    private EventViewModel mEventViewModel;
+    private HashSet<Contact> participants = new HashSet<>();
+    private DetailedActivityViewModel detailedActivityViewModel;
     private Button mContactPickerButton;
     private ChipGroup mChipGroup;
     private Integer eventId;
     private Activity iActivity;
+    private Contact olderParticipantValue;
+    private Chip olderParticipantChip;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        assert getArguments() != null;
-        eventId = getArguments().getInt(Utility.eventId);
         View view = inflater.inflate(R.layout.fragment_edit_event, container, false);
         iActivity = getActivity();
         mEventDescTextInputLayout = view.findViewById(R.id.textInputLayoutEditEventDescription);
@@ -69,17 +70,16 @@ public class EditEventFragment extends androidx.fragment.app.Fragment implements
         mContactPickerButton = view.findViewById(R.id.addMoreParticipantsButton);
         mChooseCurrencyButton = view.findViewById(R.id.editChooseCurrencyButton);
         mChipGroup = view.findViewById(R.id.edit_chip_group);
-        mEventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
-
-        mEventViewModel.getEvent().observe(getActivity(), new Observer<Event>() {
+        detailedActivityViewModel = ViewModelProviders.of(getActivity()).get(DetailedActivityViewModel.class);
+        detailedActivityViewModel.getEvent().observe(getActivity(), new Observer<Event>() {
             @Override
             public void onChanged(Event event) {
                 mEventDescTextInputLayout.getEditText().setText(event.getEventDesc());
                 mEventNameTextInputLayout.getEditText().setText(event.getEventName());
                 mChooseCurrencyButton.setText(event.getCurrency());
                 participants = event.getParticipantsList();
+                eventId = event.getEventId();
                 mSetContactsInChipGroup(participants);
-
             }
         });
         mContactPickerButtonListener();
@@ -89,19 +89,9 @@ public class EditEventFragment extends androidx.fragment.app.Fragment implements
         return view;
     }
 
-    private void mSetContactsInChipGroup(ArrayList<Contact> participants) {
-        int i = 0;
-        while (i < participants.size()) {
-            Chip chip = new Chip(iActivity);
-            chip.setText(participants.get(i).getName());
-            chip.setCloseIconVisible(true);
-            chip.setCheckable(false);
-            chip.setClickable(false);
-            chip.setOnCloseIconClickListener(this);
-            mChipGroup.addView(chip);
-            mChipGroup.setVisibility(View.VISIBLE);
-            i++;
-
+    private void mSetContactsInChipGroup(HashSet<Contact> participants) {
+        for (Contact participant : participants) {
+            chipMaker(participant);
         }
     }
 
@@ -121,9 +111,8 @@ public class EditEventFragment extends androidx.fragment.app.Fragment implements
                 if (!validateEventName()) return;
                 if (!validateEventDesc()) return;
                 setEvent();
-                mEventViewModel.updateEvent(mEvent); //Finally Updating Event to the dataBase
+                detailedActivityViewModel.updateEvent(mEvent); //Finally Updating Event to the dataBase
                 //pop-ing up this fragment to go back to EventList Fragment.
-                mEventViewModel.getEvent(eventId);
                 androidx.fragment.app.Fragment fragment = iActivity.getSupportFragmentManager().findFragmentByTag(EditEventFragment.class.getSimpleName());
                 if (fragment != null)
                     iActivity.getSupportFragmentManager().popBackStack();
@@ -198,32 +187,14 @@ public class EditEventFragment extends androidx.fragment.app.Fragment implements
     public void setContacts(List<ContactResult> contacts) {
         int i = 0;
         while (i < contacts.size()) {
-            boolean flag = true;
+            boolean flag = false;
             List<PhoneNumber> phoneNumbers = contacts.get(i).getPhoneNumbers();
             String phone = phoneNumbers.get(0).getNumber();
             String name = contacts.get(i).getDisplayName();
-            if (participants.size() > 0) {
-                int j = 0;
-                while (j < participants.size()) {
-                    String name1 = participants.get(j).getName();
-                    String phone1 = participants.get(j).getNumber();
-                    if(Objects.equals(name, name1) && Objects.equals(phone, phone1)){
-                        flag=false;
-                    }
-                    j++;
-                }
-            }
-            if(flag) {
-                Contact contact = new Contact(name, phone);
-                participants.add(contact);
-                Chip chip = new Chip(getActivity());
-                chip.setText(contact.getName());
-                chip.setCloseIconVisible(true);
-                chip.setCheckable(false);
-                chip.setClickable(false);
-                chip.setOnCloseIconClickListener(this);
-                mChipGroup.addView(chip);
-                mChipGroup.setVisibility(View.VISIBLE);
+            Contact contact = new Contact(name, phone);
+            flag = participants.add(contact);
+            if (flag) {
+                chipMaker(contact);
             }
             i++;
         }
@@ -250,17 +221,59 @@ public class EditEventFragment extends androidx.fragment.app.Fragment implements
 
     }
 
-    @Override
-    public void onClick(View v) {
-        Chip chip = (Chip) v;
-        mChipGroup.removeView(chip);
-        String name = (String) chip.getText();
-        for (int i = 0; i < participants.size(); i++) {
-            if (Objects.equals(name, participants.get(i).getName())) {
-                participants.remove(i);
-                break;
+    private void chipMaker(Contact contact) {
+        Chip chip = new Chip(iActivity);
+        chip.setText(contact.getName());
+        chip.setClickable(true);
+        chip.setCloseIconVisible(true);
+        chip.setCheckable(false);
+        chip.setOnCloseIconClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Chip chip = (Chip) v;
+                String name = (String) chip.getText();
+                for (Contact participant : participants) {
+                    if (Objects.equals(name, participant.getName())) {
+                        if (participants.size() > 1) {
+                            participants.remove(participant);
+                            mChipGroup.removeView(chip);
+                            break;
+                        } else {
+                            Toast.makeText(getActivity(), "At least One Participant Required", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
             }
-        }
+        });
+        chip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Chip chip = (Chip) v;
+                String name = (String) chip.getText();
+                for (Contact participant : participants) {
+                    if (Objects.equals(name, participant.getName())) {
+                        EditParticipantFragment editParticipantFragment = new EditParticipantFragment(EditEventFragment.this);
+                        Bundle data = new Bundle();
+                        data.putParcelable("contact", participant);
+                        olderParticipantValue = participant;
+                        olderParticipantChip = chip;
+                        FragmentUtility.inflateFragment(editParticipantFragment, getActivity().getSupportFragmentManager(),
+                                R.id.fragmentContainer2, true, true, data);
+                        break;
+                    }
+                }
+            }
+        });
+        mChipGroup.addView(chip);
+        mChipGroup.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onUpdate(Contact contact) {
+        participants.add(contact);
+        chipMaker(contact);
+        mChipGroup.removeView(olderParticipantChip);
+        participants.remove(olderParticipantValue);
     }
 }
 

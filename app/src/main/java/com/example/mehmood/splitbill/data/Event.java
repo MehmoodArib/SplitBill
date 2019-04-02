@@ -1,6 +1,9 @@
 package com.example.mehmood.splitbill.data;
 
-import java.util.ArrayList;
+import com.google.gson.annotations.Expose;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -12,11 +15,12 @@ public class Event {
     private String eventDesc;
     private String currency;
     private Double totalAmount;
-    private ArrayList<Contact> participantsList;
+    @Expose
+    private HashSet<Contact> participantsList;
     @PrimaryKey(autoGenerate = true)
     private Integer eventId;
 
-    public Event(String eventName, String eventDesc, String currency, Double totalAmount, ArrayList<Contact> participantsList) {
+    public Event(String eventName, String eventDesc, String currency, Double totalAmount, HashSet<Contact> participantsList) {
         this.eventName = eventName;
         this.eventDesc = eventDesc;
         this.currency = currency;
@@ -41,11 +45,11 @@ public class Event {
     }
 
 
-    public ArrayList<Contact> getParticipantsList() {
+    public HashSet<Contact> getParticipantsList() {
         return participantsList;
     }
 
-    public void setParticipantsList(ArrayList<Contact> participantsList) {
+    public void setParticipantsList(HashSet<Contact> participantsList) {
         this.participantsList = participantsList;
     }
     public String getEventName() {

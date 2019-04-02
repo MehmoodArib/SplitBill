@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:context=".ui.Expense.EditExpenseFragment">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -65,21 +66,14 @@
                 android:layout_toStartOf="@+id/paidByMeSwitchButton"
                 android:text="ME" />
 
-            <it.sephiroth.android.library.checkbox3state.CheckBox3
+            <Switch
                 android:id="@+id/paidByMeSwitchButton"
-                android:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                style="@style/Sephiroth.Widget.Checkbox3"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:checked="false"
-                android:enabled="true"
-                android:text="Select All"
-                app:sephiroth_checkbox3_checkableCycle="@array/sephiroth_checkbox3_cycleCheckedUncheckedOnly"
-                app:sephiroth_checkbox3_indeterminate="false" />
+                android:checked="true" />
         </RelativeLayout>
 
         <LinearLayout
@@ -111,10 +105,9 @@
                 android:layout_toStartOf="@+id/paidForAllSwitchButton"
                 android:text="PAID FOR ALL" />
 
-            <it.sephiroth.android.library.checkbox3state.CheckBox3
+            <Switch
                 android:id="@+id/paidForAllSwitchButton"
                 android:layout_width="wrap_content"
-                android:visibility="visible"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="8dp"
@@ -137,9 +130,7 @@
             android:layout_below="@+id/paidForLinearLayout"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:text="@string/button_add_expense"
+            android:text="Update"
             android:textAlignment="center" />
-
     </RelativeLayout>
-
 </ScrollView>

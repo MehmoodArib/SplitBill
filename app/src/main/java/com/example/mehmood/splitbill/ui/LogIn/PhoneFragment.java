@@ -56,7 +56,7 @@ public class PhoneFragment extends Fragment {
     //verify phone Number
     private boolean validatePhone () {
        phone = mPhoneTextInputEditText.getText().toString().trim();
-        if (phone.length() != 13) {
+        if (phone.length() != 10) {
             mPhoneTextInputEditText.setError("In-Valid Number");
             return false;
         } else {

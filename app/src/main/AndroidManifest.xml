@@ -4,6 +4,7 @@
     package="com.example.mehmood.splitbill">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-sdk tools:overrideLibrary="it.sephiroth.android.library.checkbox3state"/>
 
     <application
         android:name=".App"

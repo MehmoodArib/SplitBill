@@ -2,33 +2,33 @@ package com.example.mehmood.splitbill.data;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 public class MyRepository {
     private MyDao myDao;
     private LiveData<List<Event>> allEvents;
-    private LiveData<List<Expense>> allExpenses;
-    private MutableLiveData<List<Expense>> expenseListOfEvent = new MutableLiveData<>();
-    private MutableLiveData<Event> event = new MutableLiveData<>();
+    private LiveData<List<Expense>> expensesOfEvent;
+    private LiveData<Event> event;
+
 
     public MyRepository(Application application) {
         MyDataBase dataBase = MyDataBase.getInstance(application);
         myDao = dataBase.myDao();
         allEvents = myDao.getEvents();
-        allExpenses = myDao.getExpenses();
-
     }
 
-    private void asyncFinished(List<Expense> expenses) {
-        expenseListOfEvent.setValue(expenses);
+    public MyRepository(Application application,Integer eventId) {
+        //Should only be called from detailed activity
+        MyDataBase dataBase = MyDataBase.getInstance(application);
+        myDao = dataBase.myDao();
+        event = myDao.getEvent(eventId);
+        expensesOfEvent = myDao.getExpenseOfEvent(eventId);
     }
-    private void asyncFinished(Event event) {
-        this.event.setValue(event);
-    }
+
 
 
     public void addEvent(Event event) {
@@ -63,70 +63,16 @@ public class MyRepository {
         new DeleteAllExpenseAsyncTask(myDao).execute();
     }
 
-    public void getExpenseOfEvent(Integer eventId) {
-        GetExpenseOfEventAsyncTask task = new GetExpenseOfEventAsyncTask(myDao);
-        task.delegate = this;
-        task.execute(eventId);
-    }
-    public void getEvent(Integer eventId) {
-        GetEventAsyncTask task = new GetEventAsyncTask(myDao);
-        task.delegate = this;
-        task.execute(eventId);
+    public LiveData<List<Expense>> getExpenseOfEvent() {
+        return expensesOfEvent;
     }
     public LiveData<List<Event>> getAllEvents() {
         return allEvents;
     }
 
-    public LiveData<List<Expense>> getAllExpenses() {
-        return allExpenses;
-    }
 
-    public MutableLiveData<List<Expense>> getExpenseListOfEvent() {
-        return expenseListOfEvent;
-    }
-
-    public MutableLiveData<Event> getEvent() {
+    public LiveData<Event> getEvent() {
         return event;
-    }
-
-
-    private static class GetExpenseOfEventAsyncTask extends AsyncTask<Integer, Void, List<Expense>> {
-
-        private MyDao myDao;
-        private MyRepository delegate = null;
-
-        GetExpenseOfEventAsyncTask(MyDao dao) {
-            myDao = dao;
-        }
-
-        @Override
-        protected List<Expense> doInBackground(final Integer... eventId) {
-            return myDao.getExpenseOfEvent(eventId[0]);
-        }
-
-        @Override
-        protected void onPostExecute(List<Expense> expenses) {
-            delegate.asyncFinished(expenses);
-        }
-    }
-    private static class GetEventAsyncTask extends AsyncTask<Integer, Void, Event> {
-
-        private MyDao myDao;
-        private MyRepository delegate = null;
-
-        GetEventAsyncTask(MyDao dao) {
-            myDao = dao;
-        }
-
-        @Override
-        protected Event doInBackground(final Integer... eventId) {
-            return myDao.getEvent(eventId[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Event event) {
-            delegate.asyncFinished(event);
-        }
     }
 
     private static class AddEventAsyncTask extends AsyncTask<Event, Void, Void> {

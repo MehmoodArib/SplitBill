@@ -78,9 +78,5 @@ public class ExpenseBalanceFragment extends androidx.fragment.app.Fragment {
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("ExBalFragment","On Resume");
-    }
+
 }

@@ -31,6 +31,7 @@ android {
 dependencies {
     implementation 'com.ramesh.mypicker:pickerview:1.1' //currency picker
     implementation 'com.github.broakenmedia:MultiContactPicker:1.8.5'
+    implementation 'com.github.sephiroth74:Tri-State-Checkbox:v1.0.0'
 
     def lifecycle_version = "2.0.0"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"

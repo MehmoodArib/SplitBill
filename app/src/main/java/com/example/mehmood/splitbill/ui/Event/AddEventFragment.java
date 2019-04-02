@@ -1,5 +1,6 @@
 package com.example.mehmood.splitbill.ui.Event;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +15,9 @@ import com.example.mehmood.splitbill.R;
 import com.example.mehmood.splitbill.data.Contact;
 import com.example.mehmood.splitbill.data.Event;
 import com.example.mehmood.splitbill.data.EventViewModel;
+import com.example.mehmood.splitbill.ui.EditParticipantFragment;
+import com.example.mehmood.splitbill.utils.Utilities.FragmentUtility;
+import com.example.mehmood.splitbill.utils.Utilities.SharedPreferencesUtility;
 import com.example.mehmood.splitbill.utils.Utilities.Utility;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -25,6 +29,7 @@ import com.wafflecopter.multicontactpicker.RxContacts.PhoneNumber;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,12 +46,11 @@ import androidx.lifecycle.ViewModelProviders;
  * currency etc.
  */
 
-public class AddEventFragment extends Fragment implements MainActivity.ContactInfo, View.OnClickListener {
+public class AddEventFragment extends Fragment implements MainActivity.ContactInfo {
 
     private static final int CONTACT_PICKER_REQUEST = 0;
     private static final String[] CURRENCIES = {"Rs", "$", "Eu"};
-    MyOptionsPickerView singlePicker;
-
+    private MyOptionsPickerView singlePicker;
     private TextInputLayout mEventNameTextInputLayout;
     private TextInputLayout mEventDescTextInputLayout;
     private Button mAddEventButton;
@@ -55,10 +59,11 @@ public class AddEventFragment extends Fragment implements MainActivity.ContactIn
     private String mEventName;
     private String mEventDesc;
     private Event mEvent = new Event();
-    private ArrayList<Contact> participants = new ArrayList<>();
+    private HashSet<Contact> participants = new HashSet<>();
     private EventViewModel mEventViewModel;
     private Button mContactPickerButton;
     private ChipGroup mChipGroup;
+    private Activity iActivity;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -67,10 +72,11 @@ public class AddEventFragment extends Fragment implements MainActivity.ContactIn
 
         //Set Id's of the view
         setFindById(view);
-
+        iActivity = getActivity();
         //ViewModel with owner MainActivity
         mEventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
         mEvent.setCurrency(Utility.defaultCurrency);//Default Currency
+        setMyContactsInParticipants();
         mContactPickerButtonListener();
         mAddEventButtonListener(getActivity());
         currencyPicker();
@@ -78,6 +84,12 @@ public class AddEventFragment extends Fragment implements MainActivity.ContactIn
         return view;
     }
 
+    private void setMyContactsInParticipants() {
+        Contact myContact = new Contact(SharedPreferencesUtility.getInstance(getContext()).getString(SharedPreferencesUtility.Key.name),
+                SharedPreferencesUtility.getInstance(getContext()).getString(SharedPreferencesUtility.Key.phone));
+        participants.add(myContact);
+        chipMaker(myContact);
+    }
     private void mChooseCurrencyButtonListener() {
         mChooseCurrencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,35 +178,16 @@ public class AddEventFragment extends Fragment implements MainActivity.ContactIn
 
     @Override
     public void setContacts(List<ContactResult> contacts) {
-
         int i = 0;
         while (i < contacts.size()) {
-            boolean flag = true;
+            boolean flag = false;
             List<PhoneNumber> phoneNumbers = contacts.get(i).getPhoneNumbers();
             String phone = phoneNumbers.get(0).getNumber();
             String name = contacts.get(i).getDisplayName();
-            if (participants.size() > 0) {
-                int j = 0;
-                while (j < participants.size()) {
-                    String name1 = participants.get(j).getName();
-                    String phone1 = participants.get(j).getNumber();
-                    if(Objects.equals(name, name1) && Objects.equals(phone, phone1)){
-                        flag=false;
-                    }
-                    j++;
-                }
-            }
-            if(flag) {
-                Contact contact = new Contact(name, phone);
-                participants.add(contact);
-                Chip chip = new Chip(getActivity());
-                chip.setText(contact.getName());
-                chip.setCloseIconVisible(true);
-                chip.setCheckable(false);
-                chip.setClickable(false);
-                chip.setOnCloseIconClickListener(this);
-                mChipGroup.addView(chip);
-                mChipGroup.setVisibility(View.VISIBLE);
+            Contact contact = new Contact(name, phone);
+            flag = participants.add(contact);
+            if (flag) {
+                chipMaker(contact);
             }
             i++;
         }
@@ -228,16 +221,42 @@ public class AddEventFragment extends Fragment implements MainActivity.ContactIn
 
     }
 
-    @Override
-    public void onClick(View v) {
-        Chip chip = (Chip) v;
-        mChipGroup.removeView(chip);
-        String name = (String) chip.getText();
-        for (int i = 0; i < participants.size(); i++) {
-            if (Objects.equals(name, participants.get(i).getName())) {
-                participants.remove(i);
+    private void chipMaker(Contact contact) {
+        Chip chip = new Chip(iActivity);
+        chip.setText(contact.getName());
+        chip.setClickable(true);
+        chip.setCloseIconVisible(true);
+        chip.setCheckable(false);
+        chip.setOnCloseIconClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Chip chip = (Chip) v;
+                String name = (String) chip.getText();
+                for (Contact participant : participants) {
+                    if (Objects.equals(name, participant.getName())) {
+                        if (participants.size() > 1) {
+                            participants.remove(participant);
+                            mChipGroup.removeView(chip);
+                            break;
+                        } else {
+                            Toast.makeText(getActivity(), "At least One Participant Required", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
             }
-        }
+        });
+        chip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditParticipantFragment editParticipantFragment= new EditParticipantFragment();
+                Bundle data = new Bundle();
+               // data.putInt(Utility.eventId, eventId);
+                FragmentUtility.inflateFragment(editParticipantFragment, getActivity().getSupportFragmentManager(),
+                        R.id.fragmentContainer2, true, false, data);
+            }
+        });
+        mChipGroup.addView(chip);
+        mChipGroup.setVisibility(View.VISIBLE);
     }
 }
 
