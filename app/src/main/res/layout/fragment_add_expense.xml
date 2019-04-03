@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -58,20 +59,16 @@
                 android:text="@string/paid_by"
                 android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toStartOf="@+id/paidByMeSwitchButton"
-                android:text="ME" />
-
             <Switch
-                android:id="@+id/paidByMeSwitchButton"
+                android:id="@+id/paidBySwitchButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:checked="true" />
+
+
         </RelativeLayout>
 
         <LinearLayout
@@ -97,20 +94,23 @@
                 android:text="@string/paid_for"
                 android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toStartOf="@+id/paidForAllSwitchButton"
-                android:text="PAID FOR ALL" />
-
-            <Switch
-                android:id="@+id/paidForAllSwitchButton"
+            <it.sephiroth.android.library.checkbox3state.CheckBox3
+                android:id="@+id/checkBox1"
+                style="@style/Sephiroth.Widget.Checkbox3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginEnd="8dp"
-                android:checked="true" />
+                android:layout_marginTop="24dp"
+                android:checked="false"
+                android:enabled="true"
+                android:text="Select All"
+                app:layout_constraintStart_toStartOf="parent"
+                app:sephiroth_checkbox3_checkableCycle="@array/sephiroth_checkbox3_cycleCheckedUncheckedOnly"
+                app:sephiroth_checkbox3_indeterminate="false" />
+
+
         </RelativeLayout>
 
         <LinearLayout
